@@ -140,7 +140,7 @@ export default function ConfiguratorPage() {
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="text-lg font-bold tracking-tight text-foreground">
-            Tuning<span className="text-primary">Fux</span>
+            Tuning<span className="text-destructive">Fux</span>
           </a>
           <span className="text-xs text-muted-foreground font-mono tracking-wider uppercase">
             Konfigurator
@@ -155,7 +155,7 @@ export default function ConfiguratorPage() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="flex items-center gap-3 mb-2">
-            <Car className="h-5 w-5 text-primary" />
+            <Car className="h-5 w-5 text-destructive" />
             <h1 className="text-2xl font-bold text-foreground">Fahrzeug konfigurieren</h1>
           </div>
           <p className="text-muted-foreground text-sm mb-8 max-w-xl">
@@ -180,12 +180,12 @@ export default function ConfiguratorPage() {
                       onClick={() => setSelectedStage(cfg.stageId)}
                       className={`relative text-left p-4 rounded-md border transition-all ${
                         isActive
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                          ? 'border-destructive bg-destructive/5 ring-1 ring-destructive'
                           : 'border-border bg-card hover:border-muted-foreground/30'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`text-xs font-bold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                        <span className={`text-xs font-bold uppercase tracking-wider ${isActive ? 'text-destructive' : 'text-muted-foreground'}`}>
                           Stage {cfg.stageId}
                         </span>
                         <span className={`flex items-center gap-1 text-[10px] ${riskInfo.color}`}>
@@ -196,7 +196,7 @@ export default function ConfiguratorPage() {
                       <p className="text-sm font-semibold text-foreground mb-1">
                         {cfg.label.split(' – ')[1]}
                       </p>
-                      <p className="text-base font-bold text-primary mb-1">
+                      <p className="text-base font-bold text-destructive mb-1">
                         ab {formatPrice(getStageTotalPrice(cfg))}
                       </p>
                       <p className="text-xs text-muted-foreground leading-relaxed">
@@ -331,10 +331,10 @@ export default function ConfiguratorPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 p-3 rounded-md border border-primary/30 bg-primary/5"
+                  className="flex items-center gap-2 p-3 rounded-md border border-destructive/30 bg-destructive/5"
                 >
-                  <Sparkles className="h-4 w-4 text-primary shrink-0" />
-                  <span className="text-xs text-primary font-medium">
+                  <Sparkles className="h-4 w-4 text-destructive shrink-0" />
+                  <span className="text-xs text-destructive font-medium">
                     Fahrzeugdaten automatisch erkannt – Werte können manuell angepasst werden
                   </span>
                 </motion.div>
@@ -372,7 +372,7 @@ export default function ConfiguratorPage() {
                   exit={{ opacity: 0, height: 0 }}
                   className="flex items-center gap-4 p-3 rounded-md border border-border bg-card"
                 >
-                  <Gauge className="h-4 w-4 text-primary shrink-0" />
+                  <Gauge className="h-4 w-4 text-destructive shrink-0" />
                   <span className="text-xs text-muted-foreground">Stage {selectedStage} Prognose:</span>
                   <span className="text-sm font-bold text-destructive">+{previewHp} PS</span>
                   <span className="text-sm font-bold text-[hsl(210_80%_55%)]">+{previewNm} Nm</span>
@@ -427,7 +427,7 @@ function Field({
     <label className="block">
       <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
         {label}
-        {required && <span className="text-primary ml-0.5">*</span>}
+        {required && <span className="text-destructive ml-0.5">*</span>}
       </span>
       {children}
     </label>
