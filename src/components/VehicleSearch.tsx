@@ -81,7 +81,7 @@ export default function VehicleSearch({ onSelect }: VehicleSearchProps) {
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => { if (results.length > 0) setOpen(true); }}
           onKeyDown={handleKeyDown}
-          placeholder="Fahrzeug suchen – z. B. „Golf GTI", „M340i", „i30 N"…"
+          placeholder={'Fahrzeug suchen \u2013 z.\u00a0B. \u201eGolf GTI\u201c, \u201eM340i\u201c, \u201ei30 N\u201c\u2026'}
           className="field-input pl-10 pr-10"
           autoComplete="off"
         />

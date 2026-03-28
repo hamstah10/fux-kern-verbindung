@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge, Sparkles } from 'lucide-react';
+import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge, Sparkles, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateRecommendation, stageConfigs, getStageTotalPrice, formatPrice } from '@/lib/configurator-store';
 import { lookupVehicleSpec, getModelsForBrand } from '@/lib/vehicle-database';
+import VehicleSearch from '@/components/VehicleSearch';
+import type { VehicleSpec } from '@/lib/vehicle-database';
 import type { Vehicle } from '@/types/models';
 
 const brands = ['Volkswagen', 'BMW', 'Mercedes-Benz', 'Audi', 'Porsche', 'Ford', 'Seat', 'Skoda', 'Toyota', 'Hyundai', 'Cupra', 'Kia', 'Renault', 'Nissan', 'Mazda', 'Subaru', 'Honda', 'Mitsubishi'];
@@ -110,6 +112,21 @@ export default function ConfiguratorPage() {
     }
   };
 
+  const handleVehicleSearchSelect = useCallback((spec: VehicleSpec) => {
+    setForm((prev) => ({
+      ...prev,
+      brand: spec.brand,
+      model: spec.model,
+      engine_code: spec.engineCode,
+      ecu_type: spec.ecuType ?? '',
+      stock_hp: spec.stockHp,
+      stock_nm: spec.stockNm,
+      fuel_type: spec.fuelType,
+    }));
+    setSuggestedModels(getModelsForBrand(spec.brand));
+    setAutoDetected(true);
+  }, []);
+
   // Preview estimates based on current HP/Nm input
   const previewHp = form.stock_hp > 0
     ? Math.round(form.stock_hp * stageConfigs[selectedStage - 1].hpMultiplier)
@@ -201,6 +218,14 @@ export default function ConfiguratorPage() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Quick Search */}
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
+                Schnellsuche
+              </span>
+              <VehicleSearch onSelect={handleVehicleSearchSelect} />
             </div>
 
             {/* Row 1: Brand + Model + Year */}
