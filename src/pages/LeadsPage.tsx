@@ -34,7 +34,7 @@ export default function LeadsPage() {
         <SectionHeader title="Leads" sub="Lead-Management und Source-Tracking" />
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-2 px-4 py-2 rounded-sm bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-sm text-primary-foreground text-sm font-medium transition-colors bg-destructive"
         >
           <Plus className="h-4 w-4" />
           Lead anlegen
