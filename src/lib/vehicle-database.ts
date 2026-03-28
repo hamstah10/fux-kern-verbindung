@@ -68,6 +68,54 @@ const database: VehicleSpec[] = [
   { brand: 'Skoda', model: 'Octavia RS TDI', engineCode: 'DTUA', stockHp: 200, stockNm: 400, fuelType: 'diesel', ecuType: 'Bosch EDC17C74' },
   { brand: 'Skoda', model: 'Superb 2.0 TSI', engineCode: 'DNPA', stockHp: 272, stockNm: 350, fuelType: 'petrol', ecuType: 'Bosch MG1CS111' },
   { brand: 'Skoda', model: 'Kodiaq RS', engineCode: 'DTUA', stockHp: 245, stockNm: 500, fuelType: 'diesel', ecuType: 'Bosch EDC17C74' },
+
+  // Toyota
+  { brand: 'Toyota', model: 'GR Supra 3.0', engineCode: 'B58B30', stockHp: 340, stockNm: 500, fuelType: 'petrol', ecuType: 'Bosch MG1CS201' },
+  { brand: 'Toyota', model: 'GR Supra 2.0', engineCode: 'B48B20', stockHp: 258, stockNm: 400, fuelType: 'petrol', ecuType: 'Bosch MG1CS201' },
+  { brand: 'Toyota', model: 'GR Yaris', engineCode: 'G16E-GTS', stockHp: 261, stockNm: 360, fuelType: 'petrol', ecuType: 'Denso' },
+  { brand: 'Toyota', model: 'GR86', engineCode: 'FA24', stockHp: 234, stockNm: 250, fuelType: 'petrol', ecuType: 'Denso' },
+
+  // Hyundai
+  { brand: 'Hyundai', model: 'i30 N', engineCode: 'G4KH', stockHp: 280, stockNm: 392, fuelType: 'petrol', ecuType: 'Continental SIM2K-260' },
+  { brand: 'Hyundai', model: 'i30 N Performance', engineCode: 'G4KH', stockHp: 280, stockNm: 392, fuelType: 'petrol', ecuType: 'Continental SIM2K-260' },
+  { brand: 'Hyundai', model: 'Kona N', engineCode: 'G4KH', stockHp: 280, stockNm: 392, fuelType: 'petrol', ecuType: 'Continental SIM2K-260' },
+  { brand: 'Hyundai', model: 'Tucson 1.6 T-GDI', engineCode: 'G4FJ', stockHp: 180, stockNm: 265, fuelType: 'petrol', ecuType: 'Continental SIM2K' },
+  { brand: 'Hyundai', model: 'i20 N', engineCode: 'G4FJ', stockHp: 204, stockNm: 275, fuelType: 'petrol', ecuType: 'Continental SIM2K' },
+
+  // Cupra
+  { brand: 'Cupra', model: 'Formentor VZ5', engineCode: 'DAZA', stockHp: 390, stockNm: 480, fuelType: 'petrol', ecuType: 'Bosch MG1CS002' },
+  { brand: 'Cupra', model: 'Formentor 2.0 TSI', engineCode: 'DNUE', stockHp: 310, stockNm: 400, fuelType: 'petrol', ecuType: 'Bosch MG1CS111' },
+  { brand: 'Cupra', model: 'Leon VZ 2.0 TSI', engineCode: 'DNUE', stockHp: 300, stockNm: 400, fuelType: 'petrol', ecuType: 'Bosch MG1CS111' },
+  { brand: 'Cupra', model: 'Ateca 2.0 TSI', engineCode: 'DNUE', stockHp: 300, stockNm: 400, fuelType: 'petrol', ecuType: 'Bosch MG1CS111' },
+  { brand: 'Cupra', model: 'Born 231', engineCode: 'APP550', stockHp: 231, stockNm: 310, fuelType: 'electric', ecuType: 'Continental' },
+
+  // Kia
+  { brand: 'Kia', model: 'Stinger 3.3 T-GDI', engineCode: 'G6DP', stockHp: 370, stockNm: 510, fuelType: 'petrol', ecuType: 'Continental SIM2K' },
+  { brand: 'Kia', model: 'Ceed GT', engineCode: 'G4FJ', stockHp: 204, stockNm: 265, fuelType: 'petrol', ecuType: 'Continental SIM2K' },
+  { brand: 'Kia', model: 'EV6 GT', engineCode: 'PE', stockHp: 585, stockNm: 740, fuelType: 'electric', ecuType: 'Continental' },
+
+  // Renault
+  { brand: 'Renault', model: 'Mégane RS Trophy', engineCode: 'M5P', stockHp: 300, stockNm: 420, fuelType: 'petrol', ecuType: 'Continental EMS3150' },
+  { brand: 'Renault', model: 'Clio RS', engineCode: 'M5M', stockHp: 220, stockNm: 260, fuelType: 'petrol', ecuType: 'Continental EMS3150' },
+
+  // Nissan
+  { brand: 'Nissan', model: '370Z', engineCode: 'VQ37VHR', stockHp: 328, stockNm: 363, fuelType: 'petrol', ecuType: 'Hitachi' },
+  { brand: 'Nissan', model: 'GT-R R35', engineCode: 'VR38DETT', stockHp: 570, stockNm: 637, fuelType: 'petrol', ecuType: 'Hitachi' },
+
+  // Mazda
+  { brand: 'Mazda', model: 'MX-5 ND 2.0', engineCode: 'PE-VPS', stockHp: 184, stockNm: 205, fuelType: 'petrol', ecuType: 'Denso' },
+  { brand: 'Mazda', model: '3 Turbo', engineCode: 'SkyActiv-X', stockHp: 250, stockNm: 434, fuelType: 'petrol', ecuType: 'Denso' },
+
+  // Subaru
+  { brand: 'Subaru', model: 'WRX STI', engineCode: 'EJ257', stockHp: 300, stockNm: 407, fuelType: 'petrol', ecuType: 'Denso' },
+  { brand: 'Subaru', model: 'BRZ', engineCode: 'FA24', stockHp: 234, stockNm: 250, fuelType: 'petrol', ecuType: 'Denso' },
+
+  // Honda
+  { brand: 'Honda', model: 'Civic Type R FK8', engineCode: 'K20C1', stockHp: 320, stockNm: 400, fuelType: 'petrol', ecuType: 'Keihin' },
+  { brand: 'Honda', model: 'Civic Type R FL5', engineCode: 'K20C1', stockHp: 329, stockNm: 420, fuelType: 'petrol', ecuType: 'Keihin' },
+
+  // Mitsubishi
+  { brand: 'Mitsubishi', model: 'Lancer Evo X', engineCode: '4B11T', stockHp: 295, stockNm: 407, fuelType: 'petrol', ecuType: 'Mitsubishi ECU' },
 ];
 
 // Search for matching specs - returns best match
