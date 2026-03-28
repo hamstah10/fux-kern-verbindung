@@ -30,6 +30,9 @@ import OperationsOrdersPage from "./pages/OperationsOrdersPage";
 import OperationsKanbanPage from "./pages/OperationsKanbanPage";
 import OperationsCalendarPage from "./pages/OperationsCalendarPage";
 import OperationsTeamPage from "./pages/OperationsTeamPage";
+import OperationsCustomersPage from "./pages/OperationsCustomersPage";
+import OperationsTicketsPage from "./pages/OperationsTicketsPage";
+import OperationsEmailPage from "./pages/OperationsEmailPage";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +68,9 @@ const App = () => (
             <Route path="/operations" element={<OperationsDashboardPage />} />
             <Route path="/operations/orders" element={<OperationsOrdersPage />} />
             <Route path="/operations/kanban" element={<OperationsKanbanPage />} />
+            <Route path="/operations/customers" element={<OperationsCustomersPage />} />
+            <Route path="/operations/tickets" element={<OperationsTicketsPage />} />
+            <Route path="/operations/email" element={<OperationsEmailPage />} />
             <Route path="/operations/calendar" element={<OperationsCalendarPage />} />
             <Route path="/operations/team" element={<OperationsTeamPage />} />
             <Route path="/operations/orders/:id" element={<OrderDetailPage />} />
