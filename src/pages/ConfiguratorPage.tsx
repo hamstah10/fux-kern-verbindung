@@ -49,10 +49,7 @@ export default function ConfiguratorPage() {
 
   const isValid =
     form.brand.trim() !== '' &&
-    form.model.trim() !== '' &&
-    form.engine_code.trim() !== '' &&
-    form.stock_hp > 0 &&
-    form.stock_nm > 0;
+    form.model.trim() !== '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,7 +199,7 @@ export default function ConfiguratorPage() {
 
             {/* Row 2: Engine + ECU */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Motorcode" required>
+              <Field label="Motorcode">
                 <input
                   type="text"
                   value={form.engine_code}
@@ -250,7 +247,7 @@ export default function ConfiguratorPage() {
 
             {/* Row 4: HP + NM */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Serien-PS" required>
+              <Field label="Serien-PS">
                 <input
                   type="number"
                   value={form.stock_hp || ''}
@@ -259,7 +256,7 @@ export default function ConfiguratorPage() {
                   className="field-input"
                 />
               </Field>
-              <Field label="Serien-Nm" required>
+              <Field label="Serien-Nm">
                 <input
                   type="number"
                   value={form.stock_nm || ''}
