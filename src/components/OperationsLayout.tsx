@@ -138,7 +138,7 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
       <div className="min-h-screen flex flex-col bg-background text-foreground">
         {/* Header */}
         <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
-          <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-6">
+          <div className="flex items-center justify-between h-14 px-6">
             <Link to="/operations" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-sm bg-destructive flex items-center justify-center">
                 <Gauge className="h-4 w-4 text-destructive-foreground" />
