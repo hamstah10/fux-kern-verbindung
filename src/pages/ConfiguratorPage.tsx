@@ -389,7 +389,7 @@ export default function ConfiguratorPage() {
                 <Button
                   type="submit"
                   disabled={!isValid || loading}
-                  className="w-full md:w-auto gap-2"
+                  className="w-full md:w-auto gap-2 bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   size="lg"
                 >
                   {loading ? (
