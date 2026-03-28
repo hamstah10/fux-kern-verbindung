@@ -62,7 +62,7 @@ export const stageConfigs: StageConfig[] = [
     nmMultiplier: 0.45,
     risk: 'high',
     components: ['ECU-Remap', 'Turbo-Upgrade', 'Downpipe', 'Ladeluftkühler', 'Ansaugung', 'Kraftstoffpumpe', 'Kupplung/Getriebe-Upgrade'],
-    basePrice: 1.299,
+    basePrice: 1299,
     componentPrices: {
       'ECU-Remap': 1299,
       'Turbo-Upgrade': 2890,
