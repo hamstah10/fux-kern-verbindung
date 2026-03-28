@@ -28,7 +28,49 @@ export default function OperationsLayout() {
   const [tabs, setTabs] = useState<OperationsTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const navigate = useNavigate();
-  
+
+function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  return (
+    <div className="relative shrink-0 ml-1" ref={ref}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center justify-center h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
+      >
+        <Plus className="h-3.5 w-3.5" />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg py-1 min-w-[150px] z-50">
+          {(Object.keys(TAB_TYPE_LABELS) as TabType[]).map(type => {
+            const Icon = TAB_TYPE_ICONS[type];
+            return (
+              <button
+                key={type}
+                onClick={() => { onAdd(type); setOpen(false); }}
+                className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-popover-foreground hover:bg-secondary/60 transition-colors"
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {TAB_TYPE_LABELS[type]}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
   const addTab = useCallback((tab: Omit<OperationsTab, 'id' | 'color'>) => {
     setTabs(prev => {
