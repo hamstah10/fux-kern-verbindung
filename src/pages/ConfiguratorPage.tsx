@@ -215,13 +215,26 @@ export default function ConfiguratorPage() {
                 </select>
               </Field>
               <Field label="Modell" required>
-                <input
-                  type="text"
-                  value={form.model}
-                  onChange={(e) => updateField('model', e.target.value)}
-                  placeholder="z. B. Golf 8 GTI"
-                  className="field-input"
-                />
+                {suggestedModels.length > 0 ? (
+                  <select
+                    value={form.model}
+                    onChange={(e) => updateField('model', e.target.value)}
+                    className="field-input"
+                  >
+                    <option value="">Modell wählen</option>
+                    {suggestedModels.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={form.model}
+                    onChange={(e) => updateField('model', e.target.value)}
+                    placeholder="z. B. Golf 8 GTI"
+                    className="field-input"
+                  />
+                )}
               </Field>
               <Field label="Baujahr">
                 <input
