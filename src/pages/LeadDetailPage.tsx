@@ -1,10 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, User, Mail, Phone, Car, Building2, Calendar, Tag, MessageSquare, FileText, ShoppingCart } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, User, Mail, Phone, Car, Building2, Calendar, Tag, MessageSquare, Edit2, Check, X, Plus } from 'lucide-react';
 import { SectionHeader, DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockLeads, mockVehicles, mockOrders, mockDealerRequests, mockFiles, mockRecommendations, sourceLabels, leadStatusLabels, orderStatusLabels, dealerRequestStatusLabels } from '@/lib/mock-data';
 import type { LeadStatus } from '@/types/models';
+import { toast } from 'sonner';
 
 const leadStatusToDisplay: Record<LeadStatus, 'success' | 'processing' | 'new' | 'warning' | 'error'> = {
   new: 'new', qualified: 'processing', in_progress: 'processing', converted: 'success', lost: 'error',
@@ -18,11 +19,23 @@ const drStatusDisplay: Record<string, 'new' | 'processing' | 'success' | 'error'
   pending: 'new', accepted: 'processing', in_progress: 'processing', completed: 'success', rejected: 'error',
 };
 
+const allStatuses: LeadStatus[] = ['new', 'qualified', 'in_progress', 'converted', 'lost'];
+
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const lead = mockLeads.find(l => l.id === id);
+  const leadData = mockLeads.find(l => l.id === id);
 
-  if (!lead) {
+  const [status, setStatus] = useState<LeadStatus>(leadData?.status ?? 'new');
+  const [notes, setNotes] = useState(leadData?.notes ?? '');
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [notesDraft, setNotesDraft] = useState(notes);
+  const [editingContact, setEditingContact] = useState(false);
+  const [contactName, setContactName] = useState(leadData?.name ?? '');
+  const [contactEmail, setContactEmail] = useState(leadData?.email ?? '');
+  const [contactPhone, setContactPhone] = useState(leadData?.phone ?? '');
+  const [apiTrace, setApiTrace] = useState<string[]>([]);
+
+  if (!leadData) {
     return (
       <div className="p-6">
         <Link to="/admin/leads" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4">
@@ -33,14 +46,35 @@ export default function LeadDetailPage() {
     );
   }
 
-  const vehicle = lead.vehicle_id ? mockVehicles.find(v => v.id === lead.vehicle_id) : undefined;
-  const orders = mockOrders.filter(o => o.lead_id === lead.id);
-  const dealerRequests = mockDealerRequests.filter(dr => dr.lead_id === lead.id);
-  const recommendations = mockRecommendations.filter(r => r.lead_id === lead.id);
-  const files = mockFiles.filter(f => f.lead_id === lead.id);
+  const vehicle = leadData.vehicle_id ? mockVehicles.find(v => v.id === leadData.vehicle_id) : undefined;
+  const orders = mockOrders.filter(o => o.lead_id === leadData.id);
+  const dealerRequests = mockDealerRequests.filter(dr => dr.lead_id === leadData.id);
+  const recommendations = mockRecommendations.filter(r => r.lead_id === leadData.id);
 
-  const createdDate = new Date(lead.created_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  const updatedDate = new Date(lead.updated_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const createdDate = new Date(leadData.created_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const updatedDate = new Date(leadData.updated_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  const handleStatusChange = (newStatus: LeadStatus) => {
+    setStatus(newStatus);
+    const trace = `PATCH /api/v1/leads/${leadData.id} → 200 OK { status: "${newStatus}" }`;
+    setApiTrace(prev => [trace, ...prev]);
+    toast.success(`Status geändert: ${leadStatusLabels[newStatus]}`);
+  };
+
+  const handleSaveNotes = () => {
+    setNotes(notesDraft);
+    setEditingNotes(false);
+    const trace = `PATCH /api/v1/leads/${leadData.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
+    setApiTrace(prev => [trace, ...prev]);
+    toast.success('Notizen gespeichert');
+  };
+
+  const handleSaveContact = () => {
+    setEditingContact(false);
+    const trace = `PATCH /api/v1/leads/${leadData.id} → 200 OK { name: "${contactName}", email: "${contactEmail}" }`;
+    setApiTrace(prev => [trace, ...prev]);
+    toast.success('Kontaktdaten aktualisiert');
+  };
 
   return (
     <div className="p-6">
@@ -51,41 +85,85 @@ export default function LeadDetailPage() {
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-bold text-foreground">{lead.name}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{lead.email}</p>
+            <h1 className="text-xl font-bold text-foreground">{contactName}</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">{contactEmail}</p>
           </div>
-          <StatusBadge status={leadStatusToDisplay[lead.status]} label={leadStatusLabels[lead.status]} />
+          <StatusBadge status={leadStatusToDisplay[status]} label={leadStatusLabels[status]} />
         </div>
+
+        {/* Status Changer */}
+        <DataCard className="mb-6">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Status ändern</h3>
+          <div className="flex gap-1.5">
+            {allStatuses.map(s => (
+              <button
+                key={s}
+                onClick={() => handleStatusChange(s)}
+                className={`px-3 py-1.5 text-xs rounded-sm transition-all ${
+                  status === s
+                    ? 'bg-destructive text-destructive-foreground font-medium'
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                {leadStatusLabels[s]}
+              </button>
+            ))}
+          </div>
+        </DataCard>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           {/* Contact Info */}
           <DataCard>
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Kontaktdaten</h3>
-            <div className="space-y-3">
-              <InfoRow icon={<User className="h-3.5 w-3.5" />} label="Name" value={lead.name} />
-              <InfoRow icon={<Mail className="h-3.5 w-3.5" />} label="E-Mail" value={lead.email} />
-              <InfoRow icon={<Phone className="h-3.5 w-3.5" />} label="Telefon" value={lead.phone || '–'} />
-              <InfoRow icon={<Calendar className="h-3.5 w-3.5" />} label="Erstellt" value={createdDate} />
-              <InfoRow icon={<Calendar className="h-3.5 w-3.5" />} label="Aktualisiert" value={updatedDate} />
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Kontaktdaten</h3>
+              <button onClick={() => { setEditingContact(!editingContact); }} className="text-muted-foreground hover:text-foreground transition-colors">
+                <Edit2 className="h-3.5 w-3.5" />
+              </button>
             </div>
+            {editingContact ? (
+              <div className="space-y-2">
+                <input value={contactName} onChange={e => setContactName(e.target.value)} placeholder="Name"
+                  className="w-full px-2 py-1.5 text-sm rounded-sm bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
+                <input value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="E-Mail"
+                  className="w-full px-2 py-1.5 text-sm rounded-sm bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
+                <input value={contactPhone} onChange={e => setContactPhone(e.target.value)} placeholder="Telefon"
+                  className="w-full px-2 py-1.5 text-sm rounded-sm bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
+                <div className="flex gap-1.5 pt-1">
+                  <button onClick={handleSaveContact} className="px-3 py-1 text-xs rounded-sm bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors flex items-center gap-1">
+                    <Check className="h-3 w-3" /> Speichern
+                  </button>
+                  <button onClick={() => setEditingContact(false)} className="px-3 py-1 text-xs rounded-sm bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors flex items-center gap-1">
+                    <X className="h-3 w-3" /> Abbrechen
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <InfoRow icon={<User className="h-3.5 w-3.5" />} label="Name" value={contactName} />
+                <InfoRow icon={<Mail className="h-3.5 w-3.5" />} label="E-Mail" value={contactEmail} />
+                <InfoRow icon={<Phone className="h-3.5 w-3.5" />} label="Telefon" value={contactPhone || '–'} />
+                <InfoRow icon={<Calendar className="h-3.5 w-3.5" />} label="Erstellt" value={createdDate} />
+                <InfoRow icon={<Calendar className="h-3.5 w-3.5" />} label="Aktualisiert" value={updatedDate} />
+              </div>
+            )}
           </DataCard>
 
           {/* Source Info */}
           <DataCard>
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Quelle & Tracking</h3>
             <div className="space-y-3">
-              <InfoRow icon={<Tag className="h-3.5 w-3.5" />} label="Kanal" value={sourceLabels[lead.source_metadata.type]} />
-              {lead.source_metadata.campaign && (
-                <InfoRow icon={<Tag className="h-3.5 w-3.5" />} label="Kampagne" value={lead.source_metadata.campaign} mono />
+              <InfoRow icon={<Tag className="h-3.5 w-3.5" />} label="Kanal" value={sourceLabels[leadData.source_metadata.type]} />
+              {leadData.source_metadata.campaign && (
+                <InfoRow icon={<Tag className="h-3.5 w-3.5" />} label="Kampagne" value={leadData.source_metadata.campaign} mono />
               )}
-              {lead.source_metadata.click_id && (
-                <InfoRow icon={<Tag className="h-3.5 w-3.5" />} label="Click ID" value={lead.source_metadata.click_id} mono />
+              {leadData.source_metadata.click_id && (
+                <InfoRow icon={<Tag className="h-3.5 w-3.5" />} label="Click ID" value={leadData.source_metadata.click_id} mono />
               )}
-              {lead.source_metadata.referrer && (
-                <InfoRow icon={<User className="h-3.5 w-3.5" />} label="Empfohlen von" value={lead.source_metadata.referrer} />
+              {leadData.source_metadata.referrer && (
+                <InfoRow icon={<User className="h-3.5 w-3.5" />} label="Empfohlen von" value={leadData.source_metadata.referrer} />
               )}
-              {lead.assigned_dealer_id && (
-                <InfoRow icon={<Building2 className="h-3.5 w-3.5" />} label="Händler" value={lead.assigned_dealer_id} mono />
+              {leadData.assigned_dealer_id && (
+                <InfoRow icon={<Building2 className="h-3.5 w-3.5" />} label="Händler" value={leadData.assigned_dealer_id} mono />
               )}
             </div>
           </DataCard>
@@ -112,12 +190,42 @@ export default function LeadDetailPage() {
         </div>
 
         {/* Notes */}
-        {lead.notes && (
-          <DataCard className="mb-6">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notizen</h3>
-            <p className="text-sm text-foreground">{lead.notes}</p>
-          </DataCard>
-        )}
+        <DataCard className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Notizen</h3>
+            {!editingNotes && (
+              <button onClick={() => { setNotesDraft(notes); setEditingNotes(true); }} className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-xs">
+                <Edit2 className="h-3 w-3" /> {notes ? 'Bearbeiten' : 'Hinzufügen'}
+              </button>
+            )}
+          </div>
+          <AnimatePresence mode="wait">
+            {editingNotes ? (
+              <motion.div key="edit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <textarea
+                  value={notesDraft}
+                  onChange={e => setNotesDraft(e.target.value)}
+                  rows={3}
+                  maxLength={1000}
+                  placeholder="Notizen zum Lead hinzufügen..."
+                  className="w-full px-3 py-2 text-sm rounded-sm bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                />
+                <div className="flex gap-1.5 mt-2">
+                  <button onClick={handleSaveNotes} className="px-3 py-1.5 text-xs rounded-sm bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors flex items-center gap-1">
+                    <Check className="h-3 w-3" /> Speichern
+                  </button>
+                  <button onClick={() => setEditingNotes(false)} className="px-3 py-1.5 text-xs rounded-sm bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors flex items-center gap-1">
+                    <X className="h-3 w-3" /> Abbrechen
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div key="view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <p className="text-sm text-foreground">{notes || <span className="text-muted-foreground italic">Keine Notizen vorhanden</span>}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </DataCard>
 
         {/* Recommendations */}
         {recommendations.length > 0 && (
@@ -185,8 +293,8 @@ export default function LeadDetailPage() {
 
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">
-          <p>GET /api/v1/leads/{lead.id} → 200 OK</p>
-          <p>Response: {JSON.stringify({ id: lead.id, status: lead.status, vehicle_id: lead.vehicle_id }).slice(0, 120)}</p>
+          <p>GET /api/v1/leads/{leadData.id} → 200 OK</p>
+          {apiTrace.map((t, i) => <p key={i}>{t}</p>)}
         </div>
       </motion.div>
     </div>
