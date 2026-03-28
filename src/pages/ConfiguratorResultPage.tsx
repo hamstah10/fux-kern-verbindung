@@ -12,6 +12,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { getResult, stageConfigs, getStageTotalPrice, formatPrice } from '@/lib/configurator-store';
 
+// Merge all stage dyno data into one dataset for comparison chart
+function mergedCompareData(stages: { dynoPoints: { rpm: number; power: number; torque: number }[] }[]) {
+  const s1 = stages[0]?.dynoPoints ?? [];
+  const s2 = stages[1]?.dynoPoints ?? [];
+  const s3 = stages[2]?.dynoPoints ?? [];
+  return s1.map((p, i) => ({
+    rpm: p.rpm,
+    ps1: p.power,
+    nm1: p.torque,
+    ps2: s2[i]?.power ?? 0,
+    nm2: s2[i]?.torque ?? 0,
+    ps3: s3[i]?.power ?? 0,
+    nm3: s3[i]?.torque ?? 0,
+  }));
+}
+
 const riskLabels: Record<string, { label: string; color: string }> = {
   low: { label: 'Niedrig', color: 'text-[hsl(var(--success))]' },
   medium: { label: 'Mittel', color: 'text-[hsl(var(--warning))]' },
