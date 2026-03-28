@@ -49,11 +49,19 @@ const mockTickets: Ticket[] = [
 ];
 
 export default function OperationsTicketsPage() {
+  const [searchParams] = useSearchParams();
   const [tickets, setTickets] = useState(mockTickets);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<TicketStatus | 'all'>('all');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (id) {
+      const ticket = mockTickets.find(t => t.id === id);
+      if (ticket) setSelectedTicket(ticket);
+    }
+  }, [searchParams]);
   const filtered = tickets.filter(t => {
     if (statusFilter !== 'all' && t.status !== statusFilter) return false;
     if (search) {

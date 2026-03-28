@@ -36,11 +36,22 @@ const mockEmails: EmailMessage[] = [
 ];
 
 export default function OperationsEmailPage() {
+  const [searchParams] = useSearchParams();
   const [folder, setFolder] = useState<EmailFolder>('inbox');
   const [search, setSearch] = useState('');
   const [emails, setEmails] = useState(mockEmails);
   const [selectedEmail, setSelectedEmail] = useState<EmailMessage | null>(null);
 
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (id) {
+      const email = mockEmails.find(e => e.id === id);
+      if (email) {
+        setFolder(email.folder);
+        setSelectedEmail(email);
+      }
+    }
+  }, [searchParams]);
   const folderEmails = emails.filter(e => e.folder === folder);
   const filtered = folderEmails.filter(e => {
     if (!search) return true;
