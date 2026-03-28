@@ -11,24 +11,36 @@ interface PinToTabButtonProps {
 }
 
 export function PinToTabButton({ type, label, path, className = '' }: PinToTabButtonProps) {
-  const { addTab } = useOperationsTabs();
+  const { tabs, addTab, removeTab } = useOperationsTabs();
   const navigate = useNavigate();
+
+  const existingTab = tabs.find(t => t.path === path);
+  const isPinned = Boolean(existingTab);
 
   const handlePin = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addTab({ type, label, path });
-    navigate(path);
-    toast.success(`Tab "${label}" angeheftet`);
+    if (isPinned && existingTab) {
+      removeTab(existingTab.id);
+      toast.info(`Tab "${label}" entfernt`);
+    } else {
+      addTab({ type, label, path });
+      navigate(path);
+      toast.success(`Tab "${label}" angeheftet`);
+    }
   };
 
   return (
     <button
       onClick={handlePin}
-      title="Als Tab anheften"
-      className={`p-1.5 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors ${className}`}
+      title={isPinned ? 'Tab entfernen' : 'Als Tab anheften'}
+      className={`p-1.5 rounded-sm transition-colors ${
+        isPinned
+          ? 'text-destructive hover:text-destructive/80'
+          : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+      } ${className}`}
     >
-      <PinIcon className="h-3.5 w-3.5" />
+      <PinIcon className={`h-3.5 w-3.5 ${isPinned ? 'fill-destructive' : ''}`} />
     </button>
   );
 }
