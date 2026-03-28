@@ -21,7 +21,7 @@ const navItems = [
 const portalItems = [
   { label: 'Kundenportal', path: '/my-garage', icon: Car },
   { label: 'Händlerportal', path: '/dealer', icon: Building2 },
-  { label: 'Operations', path: '/operations', icon: ShoppingCart },
+  { label: 'TuningCockpit', path: '/operations', icon: ShoppingCart },
 ];
 
 export function AppSidebar() {
