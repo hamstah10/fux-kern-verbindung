@@ -62,7 +62,7 @@ export default function LandingPage() {
               transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
               className="rounded-md border border-border bg-card p-5"
             >
-              <feat.icon className="h-5 w-5 mb-3 text-destructive" />
+              <feat.icon className="h-5 w-5 mb-3 text-[#8d0202]" />
               <h3 className="text-sm font-semibold text-foreground mb-1">{feat.title}</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
             </motion.div>
