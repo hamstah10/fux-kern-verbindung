@@ -47,7 +47,7 @@ export default function DynoPage() {
                         labelFormatter={v => `${v} rpm`}
                       />
                       <Legend wrapperStyle={{ fontSize: '11px' }} />
-                      <Line type="monotone" dataKey="power" name="Leistung (PS)" stroke="hsl(22 90% 55%)" strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="power" name="Leistung (PS)" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="torque" name="Drehmoment (Nm)" stroke="hsl(210 80% 55%)" strokeWidth={2} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
