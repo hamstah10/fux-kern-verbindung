@@ -1,9 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Building2, CheckCircle, Star, MapPin, Wrench, Shield, BarChart3 } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Building2, CheckCircle, Star, MapPin, Wrench, Shield, BarChart3, Edit2, Check, X } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockDealers, mockDealerRequests, mockLeads, mockVehicles, dealerRequestStatusLabels } from '@/lib/mock-data';
 import type { DealerRequestStatus } from '@/types/models';
+import { toast } from 'sonner';
 
 const drStatusDisplay: Record<DealerRequestStatus, 'new' | 'processing' | 'success' | 'error'> = {
   pending: 'new', accepted: 'processing', in_progress: 'processing', completed: 'success', rejected: 'error',
@@ -12,6 +14,11 @@ const drStatusDisplay: Record<DealerRequestStatus, 'new' | 'processing' | 'succe
 export default function PartnerDetailPage() {
   const { id } = useParams<{ id: string }>();
   const dealer = mockDealers.find(d => d.id === id);
+
+  const [notes, setNotes] = useState('');
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [apiTrace, setApiTrace] = useState<string[]>([]);
 
   if (!dealer) {
     return (
@@ -29,6 +36,14 @@ export default function PartnerDetailPage() {
     ? Math.round((dealer.completed_jobs / (dealer.completed_jobs + dealer.active_requests)) * 100)
     : 0;
 
+  const handleSaveNotes = () => {
+    setNotes(notesDraft);
+    setEditingNotes(false);
+    const trace = `PATCH /api/v1/dealers/${dealer.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
+    setApiTrace(prev => [trace, ...prev]);
+    toast.success('Notizen gespeichert');
+  };
+
   return (
     <div className="p-6">
       <Link to="/admin/partners" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
@@ -41,11 +56,11 @@ export default function PartnerDetailPage() {
             <div className="flex items-center gap-2 mb-1">
               <Building2 className="h-5 w-5 text-destructive" />
               <h1 className="text-xl font-bold text-foreground">{dealer.name}</h1>
-              {dealer.verified && <CheckCircle className="h-4 w-4 text-emerald-400" />}
+              {dealer.verified && <CheckCircle className="h-4 w-4 text-[hsl(var(--success))]" />}
             </div>
             <p className="text-sm text-muted-foreground">{dealer.city}, {dealer.region}</p>
           </div>
-          <div className="flex items-center gap-1 text-amber-400">
+          <div className="flex items-center gap-1 text-[hsl(var(--warning))]">
             <Star className="h-4 w-4 fill-current" />
             <span className="text-lg font-bold">{dealer.rating}</span>
           </div>
@@ -84,6 +99,38 @@ export default function PartnerDetailPage() {
           </DataCard>
         </div>
 
+        {/* Notes */}
+        <DataCard className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Notizen</h3>
+            {!editingNotes && (
+              <button onClick={() => { setNotesDraft(notes); setEditingNotes(true); }} className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-xs">
+                <Edit2 className="h-3 w-3" /> {notes ? 'Bearbeiten' : 'Hinzufügen'}
+              </button>
+            )}
+          </div>
+          <AnimatePresence mode="wait">
+            {editingNotes ? (
+              <motion.div key="edit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <textarea value={notesDraft} onChange={e => setNotesDraft(e.target.value)} rows={3} maxLength={1000} placeholder="Notizen zum Partner hinzufügen..."
+                  className="w-full px-3 py-2 text-sm rounded-sm bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none" />
+                <div className="flex gap-1.5 mt-2">
+                  <button onClick={handleSaveNotes} className="px-3 py-1.5 text-xs rounded-sm bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors flex items-center gap-1">
+                    <Check className="h-3 w-3" /> Speichern
+                  </button>
+                  <button onClick={() => setEditingNotes(false)} className="px-3 py-1.5 text-xs rounded-sm bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors flex items-center gap-1">
+                    <X className="h-3 w-3" /> Abbrechen
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div key="view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <p className="text-sm text-foreground">{notes || <span className="text-muted-foreground italic">Keine Notizen vorhanden</span>}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </DataCard>
+
         {/* Dealer Requests */}
         {requests.length > 0 && (
           <div className="mb-6">
@@ -115,7 +162,7 @@ export default function PartnerDetailPage() {
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">
           <p>GET /api/v1/dealers/{dealer.id} → 200 OK</p>
-          <p>Response: {JSON.stringify({ id: dealer.id, name: dealer.name, rating: dealer.rating, verified: dealer.verified }).slice(0, 120)}</p>
+          {apiTrace.map((t, i) => <p key={i}>{t}</p>)}
         </div>
       </motion.div>
     </div>
