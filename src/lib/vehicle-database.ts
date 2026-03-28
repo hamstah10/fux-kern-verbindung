@@ -118,6 +118,39 @@ const database: VehicleSpec[] = [
   { brand: 'Mitsubishi', model: 'Lancer Evo X', engineCode: '4B11T', stockHp: 295, stockNm: 407, fuelType: 'petrol', ecuType: 'Mitsubishi ECU' },
 ];
 
+// Full-text search across brand, model, engineCode
+export function searchVehicles(query: string, limit = 8): VehicleSpec[] {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+
+  const terms = q.split(/\s+/);
+
+  // Score each entry by how many terms match
+  const scored = database.map((spec) => {
+    const haystack = `${spec.brand} ${spec.model} ${spec.engineCode} ${spec.ecuType ?? ''} ${spec.stockHp}ps`.toLowerCase();
+    let score = 0;
+    for (const term of terms) {
+      if (haystack.includes(term)) score += 1;
+    }
+    // Bonus for exact brand+model start match
+    const fullName = `${spec.brand} ${spec.model}`.toLowerCase();
+    if (fullName.startsWith(q)) score += 3;
+    else if (fullName.includes(q)) score += 2;
+    return { spec, score };
+  });
+
+  return scored
+    .filter((s) => s.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((s) => s.spec);
+}
+
+// Get all specs (for listing)
+export function getAllVehicles(): VehicleSpec[] {
+  return [...database];
+}
+
 // Search for matching specs - returns best match
 export function lookupVehicleSpec(
   brand: string,
