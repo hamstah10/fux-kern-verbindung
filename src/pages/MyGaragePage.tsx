@@ -126,7 +126,7 @@ export default function MyGaragePage() {
       {/* Recommendation History */}
       <div>
         <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" /> Empfehlungshistorie
+          <Sparkles className="h-4 w-4 text-destructive" /> Empfehlungshistorie
         </h2>
         {mockRecommendations.map((rec) => {
           const vehicle = mockVehicles.find(v => v.id === rec.vehicle_id);
