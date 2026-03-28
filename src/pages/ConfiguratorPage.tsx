@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { generateRecommendation, stageConfigs } from '@/lib/configurator-store';
+import { generateRecommendation, stageConfigs, getStageTotalPrice, formatPrice } from '@/lib/configurator-store';
 import { lookupVehicleSpec, getModelsForBrand } from '@/lib/vehicle-database';
 import type { Vehicle } from '@/types/models';
 
@@ -178,6 +178,9 @@ export default function ConfiguratorPage() {
                       </div>
                       <p className="text-sm font-semibold text-foreground mb-1">
                         {cfg.label.split(' – ')[1]}
+                      </p>
+                      <p className="text-base font-bold text-primary mb-1">
+                        ab {formatPrice(getStageTotalPrice(cfg))}
                       </p>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         +{Math.round(cfg.hpMultiplier * 100)}% PS · +{Math.round(cfg.nmMultiplier * 100)}% Nm
