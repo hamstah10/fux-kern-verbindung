@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, XCircle, Mail, Send, Inbox, Clock, User, Paperclip, Star, StarOff, ArrowRight, X } from 'lucide-react';
 import { DataCard } from '@/components/DataComponents';
 import { mockLeads } from '@/lib/mock-data';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 type EmailFolder = 'inbox' | 'sent';
 

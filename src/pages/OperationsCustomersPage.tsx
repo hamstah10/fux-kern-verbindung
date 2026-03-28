@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockLeads, mockVehicles, mockOrders, leadStatusLabels, orderStatusLabels } from '@/lib/mock-data';
 import type { LeadStatus } from '@/types/models';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 const leadStatusToDisplay: Record<LeadStatus, 'success' | 'processing' | 'new' | 'warning' | 'error'> = {
   new: 'new', qualified: 'processing', in_progress: 'processing', converted: 'success', lost: 'error',

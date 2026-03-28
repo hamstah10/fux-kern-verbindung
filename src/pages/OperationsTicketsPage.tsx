@@ -4,6 +4,7 @@ import { Search, XCircle, MessageSquare, Clock, User, AlertCircle, CheckCircle, 
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockLeads } from '@/lib/mock-data';
 import { toast } from 'sonner';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 type TicketStatus = 'open' | 'in_progress' | 'waiting' | 'resolved' | 'closed';

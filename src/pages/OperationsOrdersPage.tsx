@@ -5,6 +5,7 @@ import { Search, Filter } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockLeads, mockVehicles, orderStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
   draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
