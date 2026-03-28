@@ -374,7 +374,7 @@ export default function ConfiguratorPage() {
                 >
                   <Gauge className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-xs text-muted-foreground">Stage {selectedStage} Prognose:</span>
-                  <span className="text-sm font-bold text-primary">+{previewHp} PS</span>
+                  <span className="text-sm font-bold text-destructive">+{previewHp} PS</span>
                   <span className="text-sm font-bold text-[hsl(210_80%_55%)]">+{previewNm} Nm</span>
                   <span className="text-xs text-muted-foreground ml-auto">
                     → {form.stock_hp + previewHp} PS / {form.stock_nm + previewNm} Nm
