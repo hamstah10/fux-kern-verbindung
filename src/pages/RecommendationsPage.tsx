@@ -11,7 +11,7 @@ const riskDisplay: Record<string, { status: 'success' | 'warning' | 'error'; lab
 
 export default function RecommendationsPage() {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="Empfehlungen" sub="AI-generierte Tuning-Empfehlungen – alle Werte sind fahrzeugspezifische Prognosen" />
 
       <div className="space-y-4">

@@ -6,7 +6,7 @@ import { Building2, CheckCircle, Star } from 'lucide-react';
 
 export default function PartnersPage() {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="Partner" sub="Zertifizierte Partnerwerkstätten und Protokoll-Equipment" />
       <div className="grid grid-cols-3 gap-3">
         {mockDealers.map((dealer, i) => (

@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   const revenue = mockOrders.reduce((sum, o) => sum + o.total_eur, 0);
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       {showLoading && <LoadingBar />}
 
       <SectionHeader
