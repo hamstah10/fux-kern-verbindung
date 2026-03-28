@@ -27,8 +27,9 @@ import ConfiguratorResultPage from "./pages/ConfiguratorResultPage";
 import NotFound from "./pages/NotFound";
 import OperationsDashboardPage from "./pages/OperationsDashboardPage";
 import OperationsOrdersPage from "./pages/OperationsOrdersPage";
-
 import OperationsKanbanPage from "./pages/OperationsKanbanPage";
+import OperationsCalendarPage from "./pages/OperationsCalendarPage";
+import OperationsTeamPage from "./pages/OperationsTeamPage";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,8 @@ const App = () => (
             <Route path="/operations" element={<OperationsDashboardPage />} />
             <Route path="/operations/orders" element={<OperationsOrdersPage />} />
             <Route path="/operations/kanban" element={<OperationsKanbanPage />} />
+            <Route path="/operations/calendar" element={<OperationsCalendarPage />} />
+            <Route path="/operations/team" element={<OperationsTeamPage />} />
             <Route path="/operations/orders/:id" element={<OrderDetailPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
