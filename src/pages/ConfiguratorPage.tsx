@@ -296,7 +296,24 @@ export default function ConfiguratorPage() {
               </Field>
             </div>
 
-            {/* Row 4: HP + NM */}
+            {/* Auto-Detect Banner */}
+            <AnimatePresence>
+              {autoDetected && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-2 p-3 rounded-md border border-primary/30 bg-primary/5"
+                >
+                  <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-xs text-primary font-medium">
+                    Fahrzeugdaten automatisch erkannt – Werte können manuell angepasst werden
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Serien-PS">
                 <input
