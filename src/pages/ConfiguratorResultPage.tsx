@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Car, Zap, AlertTriangle, ArrowLeft, Share2, Gauge,
-  Shield, Clock, Copy, Check, Euro,
+  Shield, Clock, Copy, Check, Euro, Layers,
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -11,6 +11,22 @@ import {
 } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { getResult, stageConfigs, getStageTotalPrice, formatPrice } from '@/lib/configurator-store';
+
+// Merge all stage dyno data into one dataset for comparison chart
+function mergedCompareData(stages: { dynoPoints: { rpm: number; power: number; torque: number }[] }[]) {
+  const s1 = stages[0]?.dynoPoints ?? [];
+  const s2 = stages[1]?.dynoPoints ?? [];
+  const s3 = stages[2]?.dynoPoints ?? [];
+  return s1.map((p, i) => ({
+    rpm: p.rpm,
+    ps1: p.power,
+    nm1: p.torque,
+    ps2: s2[i]?.power ?? 0,
+    nm2: s2[i]?.torque ?? 0,
+    ps3: s3[i]?.power ?? 0,
+    nm3: s3[i]?.torque ?? 0,
+  }));
+}
 
 const riskLabels: Record<string, { label: string; color: string }> = {
   low: { label: 'Niedrig', color: 'text-[hsl(var(--success))]' },
@@ -23,6 +39,7 @@ export default function ConfiguratorResultPage() {
   const result = id ? getResult(id) : undefined;
   const [copied, setCopied] = useState(false);
   const [activeStage, setActiveStage] = useState(result?.selectedStage ?? 1);
+  const [compareMode, setCompareMode] = useState(false);
 
   if (!result) {
     return (
@@ -183,52 +200,88 @@ export default function ConfiguratorResultPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="bg-card border border-border rounded-md p-6"
         >
-          <h2 className="text-sm font-semibold text-foreground mb-4">
-            Prognostizierte Leistungskurve – {rec.stage_label}
-          </h2>
-          <div className="h-72">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-semibold text-foreground">
+              {compareMode ? 'Stage-Vergleich – Alle Kurven' : `Prognostizierte Leistungskurve \u2013 ${rec.stage_label}`}
+            </h2>
+            <button
+              type="button"
+              onClick={() => setCompareMode((prev) => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium transition-all ${
+                compareMode
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border bg-secondary text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Layers className="h-3.5 w-3.5" />
+              {compareMode ? 'Einzelansicht' : 'Vergleichsmodus'}
+            </button>
+          </div>
+          <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={dynoPoints}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(240 5% 16%)" />
-                <XAxis
-                  dataKey="rpm"
-                  stroke="hsl(240 5% 40%)"
-                  tick={{ fill: 'hsl(240 5% 50%)', fontSize: 11 }}
-                  label={{ value: 'RPM', position: 'insideBottom', offset: -4, fill: 'hsl(240 5% 50%)', fontSize: 11 }}
-                />
-                <YAxis
-                  stroke="hsl(240 5% 40%)"
-                  tick={{ fill: 'hsl(240 5% 50%)', fontSize: 11 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'hsl(240 8% 7%)',
-                    border: '1px solid hsl(240 5% 16%)',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                  }}
-                  labelFormatter={(rpm) => `${rpm} RPM`}
-                />
-                <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Line
-                  type="monotone"
-                  dataKey="power"
-                  name="PS"
-                  stroke="hsl(22 90% 55%)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="torque"
-                  name="Nm"
-                  stroke="hsl(210 80% 55%)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
+              {compareMode ? (
+                <LineChart data={mergedCompareData(stages)}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(240 5% 16%)" />
+                  <XAxis
+                    dataKey="rpm"
+                    stroke="hsl(240 5% 40%)"
+                    tick={{ fill: 'hsl(240 5% 50%)', fontSize: 11 }}
+                    label={{ value: 'RPM', position: 'insideBottom', offset: -4, fill: 'hsl(240 5% 50%)', fontSize: 11 }}
+                  />
+                  <YAxis stroke="hsl(240 5% 40%)" tick={{ fill: 'hsl(240 5% 50%)', fontSize: 11 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(240 8% 7%)',
+                      border: '1px solid hsl(240 5% 16%)',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                    }}
+                    labelFormatter={(rpm) => `${rpm} RPM`}
+                  />
+                  <Legend wrapperStyle={{ fontSize: '12px' }} />
+                  {/* Stage 1 */}
+                  <Line type="monotone" dataKey="ps1" name="S1 PS" stroke="hsl(22 90% 55%)" strokeWidth={1.5} dot={false} strokeDasharray="6 3" />
+                  <Line type="monotone" dataKey="nm1" name="S1 Nm" stroke="hsl(210 80% 55%)" strokeWidth={1.5} dot={false} strokeDasharray="6 3" />
+                  {/* Stage 2 */}
+                  <Line type="monotone" dataKey="ps2" name="S2 PS" stroke="hsl(22 90% 55%)" strokeWidth={2} dot={false} strokeDasharray="3 2" />
+                  <Line type="monotone" dataKey="nm2" name="S2 Nm" stroke="hsl(210 80% 55%)" strokeWidth={2} dot={false} strokeDasharray="3 2" />
+                  {/* Stage 3 */}
+                  <Line type="monotone" dataKey="ps3" name="S3 PS" stroke="hsl(22 90% 55%)" strokeWidth={2.5} dot={false} />
+                  <Line type="monotone" dataKey="nm3" name="S3 Nm" stroke="hsl(210 80% 55%)" strokeWidth={2.5} dot={false} />
+                </LineChart>
+              ) : (
+                <LineChart data={dynoPoints}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(240 5% 16%)" />
+                  <XAxis
+                    dataKey="rpm"
+                    stroke="hsl(240 5% 40%)"
+                    tick={{ fill: 'hsl(240 5% 50%)', fontSize: 11 }}
+                    label={{ value: 'RPM', position: 'insideBottom', offset: -4, fill: 'hsl(240 5% 50%)', fontSize: 11 }}
+                  />
+                  <YAxis stroke="hsl(240 5% 40%)" tick={{ fill: 'hsl(240 5% 50%)', fontSize: 11 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(240 8% 7%)',
+                      border: '1px solid hsl(240 5% 16%)',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                    }}
+                    labelFormatter={(rpm) => `${rpm} RPM`}
+                  />
+                  <Legend wrapperStyle={{ fontSize: '12px' }} />
+                  <Line type="monotone" dataKey="power" name="PS" stroke="hsl(22 90% 55%)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="torque" name="Nm" stroke="hsl(210 80% 55%)" strokeWidth={2} dot={false} />
+                </LineChart>
+              )}
             </ResponsiveContainer>
           </div>
+          {compareMode && (
+            <div className="flex items-center justify-center gap-6 mt-3 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2 border-dashed" style={{ borderColor: 'hsl(22 90% 55%)' }} /> Stage 1 (d{"\u00FC"}nn)</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2" style={{ borderColor: 'hsl(22 90% 55%)', borderStyle: 'dotted' }} /> Stage 2 (mittel)</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2" style={{ borderColor: 'hsl(22 90% 55%)' }} /> Stage 3 (fett)</span>
+            </div>
+          )}
         </motion.div>
 
         {/* Description + Components */}
