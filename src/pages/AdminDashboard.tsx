@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionHeader, StatCard, StatusBadge, DataCard, ErrorState, LoadingBar } from '@/components/DataComponents';
 import { mockApiEvents, mockLeads, mockOrders, mockDealerRequests, sourceLabels, leadStatusLabels } from '@/lib/mock-data';
 import type { ApiEvent, LeadStatus } from '@/types/models';
-import { Users, ShoppingCart, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Users, ShoppingCart, TrendingUp, AlertTriangle, ArrowRight } from 'lucide-react';
 
 const statusMap: Record<string, 'success' | 'processing' | 'error' | 'warning'> = {
   success: 'success', processing: 'processing', error: 'error', warning: 'warning',
@@ -37,6 +38,15 @@ export default function AdminDashboard() {
         <StatCard label="Konversionsrate" value="42%" sub="+8% vs. Vormonat" delay={0.1} />
         <StatCard label="Umsatz" value={`€${revenue.toLocaleString('de-DE')}`} sub="Laufendes Quartal" delay={0.15} />
       </div>
+
+      {/* Quick Link to Operations */}
+      <Link to="/operations" className="flex items-center justify-between p-4 rounded-sm bg-destructive/10 border border-destructive/20 hover:bg-destructive/15 transition-colors mb-4">
+        <div>
+          <p className="text-sm font-medium text-foreground">Operations Center</p>
+          <p className="text-xs text-muted-foreground">Aufträge portalübergreifend bearbeiten</p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-destructive" />
+      </Link>
 
       {/* Demo Controls */}
       <div className="flex gap-2 mb-4">
