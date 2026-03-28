@@ -102,7 +102,7 @@ export default function MyGaragePage() {
       {/* Files */}
       <div className="mb-8">
         <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-          <FileText className="h-4 w-4 text-primary" /> File Vault
+          <FileText className="h-4 w-4 text-destructive" /> File Vault
         </h2>
         <DataCard>
           <div className="divide-y divide-border">
