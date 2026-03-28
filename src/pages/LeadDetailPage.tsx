@@ -1,11 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, User, Mail, Phone, Car, Building2, Calendar, Tag, MessageSquare, Edit2, Check, X, Plus } from 'lucide-react';
 import { SectionHeader, DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockLeads, mockVehicles, mockOrders, mockDealerRequests, mockFiles, mockRecommendations, sourceLabels, leadStatusLabels, orderStatusLabels, dealerRequestStatusLabels } from '@/lib/mock-data';
 import type { LeadStatus } from '@/types/models';
 import { toast } from 'sonner';
+import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
 
 const leadStatusToDisplay: Record<LeadStatus, 'success' | 'processing' | 'new' | 'warning' | 'error'> = {
   new: 'new', qualified: 'processing', in_progress: 'processing', converted: 'success', lost: 'error',
@@ -34,6 +35,17 @@ export default function LeadDetailPage() {
   const [contactEmail, setContactEmail] = useState(leadData?.email ?? '');
   const [contactPhone, setContactPhone] = useState(leadData?.phone ?? '');
   const [apiTrace, setApiTrace] = useState<string[]>([]);
+  const [activities, setActivities] = useState<ActivityEntry[]>(() => {
+    const initial: ActivityEntry[] = [];
+    if (leadData) {
+      initial.push({ id: 'creation', timestamp: new Date(leadData.created_at), type: 'creation', label: 'Lead erstellt' });
+    }
+    return initial;
+  });
+
+  const addActivity = useCallback((entry: Omit<ActivityEntry, 'id' | 'timestamp'>) => {
+    setActivities(prev => [{ ...entry, id: crypto.randomUUID(), timestamp: new Date() }, ...prev]);
+  }, []);
 
   if (!leadData) {
     return (
@@ -55,9 +67,11 @@ export default function LeadDetailPage() {
   const updatedDate = new Date(leadData.updated_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
   const handleStatusChange = (newStatus: LeadStatus) => {
+    const oldStatus = status;
     setStatus(newStatus);
     const trace = `PATCH /api/v1/leads/${leadData.id} → 200 OK { status: "${newStatus}" }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'status_change', label: 'Status geändert', oldValue: leadStatusLabels[oldStatus], newValue: leadStatusLabels[newStatus] });
     toast.success(`Status geändert: ${leadStatusLabels[newStatus]}`);
   };
 
@@ -66,6 +80,7 @@ export default function LeadDetailPage() {
     setEditingNotes(false);
     const trace = `PATCH /api/v1/leads/${leadData.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'note_edit', label: 'Notizen aktualisiert', detail: notesDraft.slice(0, 80) });
     toast.success('Notizen gespeichert');
   };
 
@@ -73,6 +88,7 @@ export default function LeadDetailPage() {
     setEditingContact(false);
     const trace = `PATCH /api/v1/leads/${leadData.id} → 200 OK { name: "${contactName}", email: "${contactEmail}" }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'field_edit', label: 'Kontaktdaten aktualisiert', detail: `${contactName} · ${contactEmail}` });
     toast.success('Kontaktdaten aktualisiert');
   };
 
@@ -290,6 +306,9 @@ export default function LeadDetailPage() {
             </div>
           </div>
         )}
+
+        {/* Activity Timeline */}
+        <ActivityTimeline activities={activities} />
 
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">

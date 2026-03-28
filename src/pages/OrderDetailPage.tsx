@@ -1,11 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ShoppingCart, Calendar, Euro, Package, User, Car, Building2, Check, X, Edit2 } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockVehicles, mockLeads, mockDealers, mockRecommendations, orderStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
 import { toast } from 'sonner';
+import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
 
 const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
   draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
@@ -22,6 +23,16 @@ export default function OrderDetailPage() {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [apiTrace, setApiTrace] = useState<string[]>([]);
+  const [activities, setActivities] = useState<ActivityEntry[]>(() => {
+    const initial: ActivityEntry[] = [];
+    if (order) {
+      initial.push({ id: 'creation', timestamp: new Date(order.created_at), type: 'creation', label: 'Auftrag erstellt' });
+    }
+    return initial;
+  });
+  const addActivity = useCallback((entry: Omit<ActivityEntry, 'id' | 'timestamp'>) => {
+    setActivities(prev => [{ ...entry, id: crypto.randomUUID(), timestamp: new Date() }, ...prev]);
+  }, []);
 
   if (!order) {
     return (
@@ -43,9 +54,11 @@ export default function OrderDetailPage() {
   const currentStepIndex = statusSteps.indexOf(currentStatus);
 
   const handleStatusChange = (newStatus: OrderStatus) => {
+    const oldStatus = currentStatus;
     setCurrentStatus(newStatus);
     const trace = `PATCH /api/v1/orders/${order.id} → 200 OK { status: "${newStatus}" }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'status_change', label: 'Auftragsstatus geändert', oldValue: orderStatusLabels[oldStatus], newValue: orderStatusLabels[newStatus] });
     toast.success(`Auftragsstatus geändert: ${orderStatusLabels[newStatus]}`);
   };
 
@@ -54,6 +67,7 @@ export default function OrderDetailPage() {
     setEditingNotes(false);
     const trace = `PATCH /api/v1/orders/${order.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'note_edit', label: 'Notizen aktualisiert', detail: notesDraft.slice(0, 80) });
     toast.success('Notizen gespeichert');
   };
 
@@ -197,6 +211,9 @@ export default function OrderDetailPage() {
             )}
           </AnimatePresence>
         </DataCard>
+
+        {/* Activity Timeline */}
+        <ActivityTimeline activities={activities} />
 
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">

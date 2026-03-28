@@ -1,11 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Building2, CheckCircle, Star, MapPin, Wrench, Shield, BarChart3, Edit2, Check, X } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockDealers, mockDealerRequests, mockLeads, mockVehicles, dealerRequestStatusLabels } from '@/lib/mock-data';
 import type { DealerRequestStatus } from '@/types/models';
 import { toast } from 'sonner';
+import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
 
 const drStatusDisplay: Record<DealerRequestStatus, 'new' | 'processing' | 'success' | 'error'> = {
   pending: 'new', accepted: 'processing', in_progress: 'processing', completed: 'success', rejected: 'error',
@@ -19,6 +20,16 @@ export default function PartnerDetailPage() {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [apiTrace, setApiTrace] = useState<string[]>([]);
+  const [activities, setActivities] = useState<ActivityEntry[]>(() => {
+    const initial: ActivityEntry[] = [];
+    if (dealer) {
+      initial.push({ id: 'creation', timestamp: new Date(), type: 'creation', label: 'Partner erstellt' });
+    }
+    return initial;
+  });
+  const addActivity = useCallback((entry: Omit<ActivityEntry, 'id' | 'timestamp'>) => {
+    setActivities(prev => [{ ...entry, id: crypto.randomUUID(), timestamp: new Date() }, ...prev]);
+  }, []);
 
   if (!dealer) {
     return (
@@ -41,6 +52,7 @@ export default function PartnerDetailPage() {
     setEditingNotes(false);
     const trace = `PATCH /api/v1/dealers/${dealer.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'note_edit', label: 'Notizen aktualisiert', detail: notesDraft.slice(0, 80) });
     toast.success('Notizen gespeichert');
   };
 
@@ -158,6 +170,9 @@ export default function PartnerDetailPage() {
             </div>
           </div>
         )}
+
+        {/* Activity Timeline */}
+        <ActivityTimeline activities={activities} />
 
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">
