@@ -35,7 +35,7 @@ export function AppSidebar() {
       <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
         {!collapsed && (
           <span className="text-lg font-bold tracking-tight text-foreground">
-            Tuning<span className="text-primary">Fux</span>
+            Tuning<span className="text-destructive">Fux</span>
           </span>
         )}
         {collapsed && <span className="text-lg font-bold text-primary mx-auto">TF</span>}
