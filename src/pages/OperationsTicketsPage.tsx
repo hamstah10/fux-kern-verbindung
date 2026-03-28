@@ -156,6 +156,7 @@ export default function OperationsTicketsPage() {
                             path={`/operations/tickets?id=${ticket.id}`}
                           />
                         </div>
+                      </div>
                     </DataCard>
                   </button>
                 </motion.div>
