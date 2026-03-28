@@ -1,9 +1,8 @@
-import { useState, useCallback } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Circle } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const navItems = [
   { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
@@ -29,7 +28,49 @@ export default function OperationsLayout() {
   const [tabs, setTabs] = useState<OperationsTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
+
+function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  return (
+    <div className="relative shrink-0 ml-1" ref={ref}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center justify-center h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
+      >
+        <Plus className="h-3.5 w-3.5" />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-md shadow-lg py-1 min-w-[150px] z-50">
+          {(Object.keys(TAB_TYPE_LABELS) as TabType[]).map(type => {
+            const Icon = TAB_TYPE_ICONS[type];
+            return (
+              <button
+                key={type}
+                onClick={() => { onAdd(type); setOpen(false); }}
+                className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-popover-foreground hover:bg-secondary/60 transition-colors"
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {TAB_TYPE_LABELS[type]}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
   const addTab = useCallback((tab: Omit<OperationsTab, 'id' | 'color'>) => {
     setTabs(prev => {
@@ -168,24 +209,7 @@ export default function OperationsLayout() {
             })}
 
             {/* Add Tab Button */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center justify-center h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors shrink-0 ml-1">
-                  <Plus className="h-3.5 w-3.5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[160px]">
-                {(Object.keys(TAB_TYPE_LABELS) as TabType[]).map(type => {
-                  const Icon = TAB_TYPE_ICONS[type];
-                  return (
-                    <DropdownMenuItem key={type} onClick={() => addNewTab(type)} className="gap-2 text-xs">
-                      <Icon className="h-3.5 w-3.5" />
-                      {TAB_TYPE_LABELS[type]}
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <AddTabMenu onAdd={addNewTab} />
           </div>
         </div>
 
