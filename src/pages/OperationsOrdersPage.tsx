@@ -5,6 +5,7 @@ import { Search, Filter } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockLeads, mockVehicles, orderStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
   draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
@@ -90,6 +91,11 @@ export default function OperationsOrdersPage() {
                       <div className="flex items-center gap-4">
                         <span className="text-sm font-bold text-foreground font-mono-data">€{order.total_eur.toLocaleString('de-DE')}</span>
                         <StatusBadge status={orderStatusDisplay[order.status]} label={orderStatusLabels[order.status]} />
+                        <PinToTabButton
+                          type="order"
+                          label={`${order.id} – ${lead?.name ?? 'Auftrag'}`}
+                          path={`/operations/orders/${order.id}`}
+                        />
                       </div>
                     </div>
                   </DataCard>

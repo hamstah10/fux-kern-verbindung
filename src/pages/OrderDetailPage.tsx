@@ -1,12 +1,13 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShoppingCart, Calendar, Euro, Package, User, Car, Building2, Check, X, Edit2 } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, Euro, Package, User, Car, Building2, Check, X, Edit2, PinIcon } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockVehicles, mockLeads, mockDealers, mockRecommendations, orderStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
 import { toast } from 'sonner';
 import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
   draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
@@ -86,7 +87,14 @@ export default function OrderDetailPage() {
             </div>
             <p className="text-sm text-muted-foreground">{lead?.name || order.lead_id} · {vehicle ? `${vehicle.brand} ${vehicle.model}` : order.vehicle_id}</p>
           </div>
-          <StatusBadge status={orderStatusDisplay[currentStatus]} label={orderStatusLabels[currentStatus]} />
+          <div className="flex items-center gap-3">
+            <PinToTabButton
+              type="order"
+              label={`${order.id} – ${lead?.name ?? 'Auftrag'}`}
+              path={`/operations/orders/${order.id}`}
+            />
+            <StatusBadge status={orderStatusDisplay[currentStatus]} label={orderStatusLabels[currentStatus]} />
+          </div>
         </div>
 
         {/* Status Pipeline – clickable */}

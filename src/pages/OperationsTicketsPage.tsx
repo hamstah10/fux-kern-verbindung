@@ -1,9 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, XCircle, MessageSquare, Clock, User, AlertCircle, CheckCircle, X as XIcon, Filter } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockLeads } from '@/lib/mock-data';
 import { toast } from 'sonner';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 type TicketStatus = 'open' | 'in_progress' | 'waiting' | 'resolved' | 'closed';
@@ -47,11 +49,19 @@ const mockTickets: Ticket[] = [
 ];
 
 export default function OperationsTicketsPage() {
+  const [searchParams] = useSearchParams();
   const [tickets, setTickets] = useState(mockTickets);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<TicketStatus | 'all'>('all');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (id) {
+      const ticket = mockTickets.find(t => t.id === id);
+      if (ticket) setSelectedTicket(ticket);
+    }
+  }, [searchParams]);
   const filtered = tickets.filter(t => {
     if (statusFilter !== 'all' && t.status !== statusFilter) return false;
     if (search) {
@@ -147,7 +157,14 @@ export default function OperationsTicketsPage() {
                             </span>
                           </div>
                         </div>
-                        <StatusBadge status={statusDisplay[ticket.status]} label={statusLabels[ticket.status]} />
+                        <div className="flex items-center gap-2 shrink-0">
+                          <StatusBadge status={statusDisplay[ticket.status]} label={statusLabels[ticket.status]} />
+                          <PinToTabButton
+                            type="ticket"
+                            label={`${ticket.id} – ${ticket.subject.slice(0, 30)}`}
+                            path={`/operations/tickets?id=${ticket.id}`}
+                          />
+                        </div>
                       </div>
                     </DataCard>
                   </button>

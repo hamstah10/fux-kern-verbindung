@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, XCircle, Mail, Send, Inbox, Clock, User, Paperclip, Star, StarOff, ArrowRight, X } from 'lucide-react';
 import { DataCard } from '@/components/DataComponents';
 import { mockLeads } from '@/lib/mock-data';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 type EmailFolder = 'inbox' | 'sent';
 
@@ -34,11 +36,22 @@ const mockEmails: EmailMessage[] = [
 ];
 
 export default function OperationsEmailPage() {
+  const [searchParams] = useSearchParams();
   const [folder, setFolder] = useState<EmailFolder>('inbox');
   const [search, setSearch] = useState('');
   const [emails, setEmails] = useState(mockEmails);
   const [selectedEmail, setSelectedEmail] = useState<EmailMessage | null>(null);
 
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (id) {
+      const email = mockEmails.find(e => e.id === id);
+      if (email) {
+        setFolder(email.folder);
+        setSelectedEmail(email);
+      }
+    }
+  }, [searchParams]);
   const folderEmails = emails.filter(e => e.folder === folder);
   const filtered = folderEmails.filter(e => {
     if (!search) return true;
@@ -152,6 +165,11 @@ export default function OperationsEmailPage() {
                       </div>
 
                       {email.attachment && <Paperclip className="h-3 w-3 text-muted-foreground shrink-0" />}
+                      <PinToTabButton
+                        type="email"
+                        label={`${email.subject.slice(0, 30)}`}
+                        path={`/operations/email?id=${email.id}`}
+                      />
                     </div>
                   </button>
                 </motion.div>
