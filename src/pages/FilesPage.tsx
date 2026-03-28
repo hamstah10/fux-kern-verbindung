@@ -5,7 +5,7 @@ import { FileText, Download, Shield } from 'lucide-react';
 
 export default function FilesPage() {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="Dateien" sub="ECU-Files, Dyno Reports und Protokolle mit Checksummen-Validierung" />
       <DataCard>
         <div className="divide-y divide-border">

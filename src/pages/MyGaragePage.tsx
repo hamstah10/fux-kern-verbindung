@@ -15,7 +15,7 @@ export default function MyGaragePage() {
   const userOrders = mockOrders;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="MyGarage" sub="Deine Fahrzeuge, Empfehlungen und Auftragsstatus" />
 
       {/* Vehicle Cards */}

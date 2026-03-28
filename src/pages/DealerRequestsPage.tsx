@@ -10,7 +10,7 @@ const drStatusDisplay: Record<DealerRequestStatus, 'new' | 'processing' | 'succe
 
 export default function DealerRequestsPage() {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="Dealer Requests" sub="Werkstattanfragen mit Equipment-Validierung und Statusverfolgung" />
       <div className="space-y-3">
         {mockDealerRequests.map((req, i) => {

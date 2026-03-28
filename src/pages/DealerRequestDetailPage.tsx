@@ -40,7 +40,7 @@ export default function DealerRequestDetailPage() {
 
   if (!request) {
     return (
-      <div className="p-6">
+      <div className="p-6 max-w-7xl mx-auto">
         <Link to="/admin/dealer-requests" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4">
           <ArrowLeft className="h-4 w-4" /> Zurück zu Dealer Requests
         </Link>
@@ -88,7 +88,7 @@ export default function DealerRequestDetailPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <Link to="/admin/dealer-requests" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Zurück zu Dealer Requests
       </Link>

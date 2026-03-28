@@ -5,7 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 export default function DynoPage() {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="Dyno-Simulationen" sub="Leistungsprognosen auf Basis von Referenzmessungen – vorläufig und fahrzeugabhängig" />
 
       <div className="space-y-6">

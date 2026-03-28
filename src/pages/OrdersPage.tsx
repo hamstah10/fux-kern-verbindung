@@ -10,7 +10,7 @@ const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' |
 
 export default function OrdersPage() {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <SectionHeader title="Aufträge" sub="Auftragsmanagement und Statusverfolgung" />
       <div className="space-y-3">
         {mockOrders.map((order, i) => {

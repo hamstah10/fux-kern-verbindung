@@ -30,7 +30,7 @@ export default function LeadsPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <SectionHeader title="Leads" sub="Lead-Management und Source-Tracking" />
         <button
