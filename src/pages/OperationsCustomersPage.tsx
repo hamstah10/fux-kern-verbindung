@@ -118,7 +118,7 @@ export default function OperationsCustomersPage() {
                       <PinToTabButton
                         type="customer"
                         label={lead.name}
-                        path={`/operations/customers?id=${lead.id}`}
+                        path={`/operations/customers/${lead.id}`}
                       />
                       <Link to={`/admin/leads/${lead.id}`} className="text-muted-foreground hover:text-foreground transition-colors">
                         <ExternalLink className="h-3.5 w-3.5" />

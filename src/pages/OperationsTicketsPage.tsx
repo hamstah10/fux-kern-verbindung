@@ -162,7 +162,7 @@ export default function OperationsTicketsPage() {
                           <PinToTabButton
                             type="ticket"
                             label={`${ticket.id} – ${ticket.subject.slice(0, 30)}`}
-                            path={`/operations/tickets?id=${ticket.id}`}
+                            path={`/operations/tickets/${ticket.id}`}
                           />
                         </div>
                       </div>

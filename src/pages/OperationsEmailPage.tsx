@@ -168,7 +168,7 @@ export default function OperationsEmailPage() {
                       <PinToTabButton
                         type="email"
                         label={`${email.subject.slice(0, 30)}`}
-                        path={`/operations/email?id=${email.id}`}
+                        path={`/operations/email/${email.id}`}
                       />
                     </div>
                   </button>
