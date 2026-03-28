@@ -14,7 +14,7 @@ export default function VehiclesPage() {
       <div className="flex items-center justify-between mb-6">
         <SectionHeader title="Fahrzeuge" sub="Fahrzeugdatenbank mit ECU- und Motordaten" />
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-2 px-4 py-2 rounded-sm bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+          className="flex items-center gap-2 px-4 py-2 rounded-sm text-primary-foreground text-sm font-medium transition-colors bg-destructive">
           <Plus className="h-4 w-4" /> Fahrzeug anlegen
         </button>
       </div>
