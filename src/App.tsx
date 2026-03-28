@@ -16,6 +16,8 @@ import PartnersPage from "./pages/PartnersPage";
 import DealerRequestsPage from "./pages/DealerRequestsPage";
 import MyGaragePage from "./pages/MyGaragePage";
 import DealerPortalPage from "./pages/DealerPortalPage";
+import ConfiguratorPage from "./pages/ConfiguratorPage";
+import ConfiguratorResultPage from "./pages/ConfiguratorResultPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/configurator" element={<ConfiguratorPage />} />
+          <Route path="/configurator/:id" element={<ConfiguratorResultPage />} />
           <Route element={<AppLayout />}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/leads" element={<LeadsPage />} />

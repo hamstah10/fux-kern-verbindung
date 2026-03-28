@@ -12,6 +12,7 @@ export default function LandingPage() {
             Tuning<span className="text-primary">Fux</span>
           </span>
           <div className="flex gap-3">
+            <Link to="/configurator" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Konfigurator</Link>
             <Link to="/my-garage" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Kundenportal</Link>
             <Link to="/dealer" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Händlerportal</Link>
             <Link to="/admin" className="px-4 py-2 text-sm rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">Admin</Link>
