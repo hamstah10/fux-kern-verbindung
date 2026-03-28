@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/AppLayout";
+import OperationsLayout from "@/components/OperationsLayout";
 import LandingPage from "./pages/LandingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import LeadsPage from "./pages/LeadsPage";
@@ -24,6 +25,8 @@ import DealerPortalPage from "./pages/DealerPortalPage";
 import ConfiguratorPage from "./pages/ConfiguratorPage";
 import ConfiguratorResultPage from "./pages/ConfiguratorResultPage";
 import NotFound from "./pages/NotFound";
+import OperationsDashboardPage from "./pages/OperationsDashboardPage";
+import OperationsOrdersPage from "./pages/OperationsOrdersPage";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +57,11 @@ const App = () => (
             <Route path="/admin/dealer-requests/:id" element={<DealerRequestDetailPage />} />
             <Route path="/my-garage" element={<MyGaragePage />} />
             <Route path="/dealer" element={<DealerPortalPage />} />
+          </Route>
+          <Route element={<OperationsLayout />}>
+            <Route path="/operations" element={<OperationsDashboardPage />} />
+            <Route path="/operations/orders" element={<OperationsOrdersPage />} />
+            <Route path="/operations/orders/:id" element={<OrderDetailPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
