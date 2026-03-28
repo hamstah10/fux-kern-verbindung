@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { SectionHeader, DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockVehicles } from '@/lib/mock-data';
+import { getConfiguredVehicles } from '@/lib/configurator-store';
 import type { Vehicle } from '@/types/models';
 import { motion } from 'framer-motion';
 import { Plus, Car } from 'lucide-react';
 
 export default function VehiclesPage() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles);
+  const configuredVehicles = getConfiguredVehicles();
+  const allVehicles = useMemo(() => {
+    const existingIds = new Set(mockVehicles.map((v) => v.id));
+    const unique = configuredVehicles.filter((v) => !existingIds.has(v.id));
+    return [...mockVehicles, ...unique];
+  }, [configuredVehicles]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>(allVehicles);
   const [showCreate, setShowCreate] = useState(false);
 
   return (

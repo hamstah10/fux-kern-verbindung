@@ -99,6 +99,14 @@ export function getResult(id: string): ConfiguratorResult | undefined {
   return store.get(id);
 }
 
+export function getAllResults(): ConfiguratorResult[] {
+  return Array.from(store.values());
+}
+
+export function getConfiguredVehicles(): Vehicle[] {
+  return Array.from(store.values()).map((r) => r.vehicle);
+}
+
 export function generateDynoCurve(
   peakHp: number,
   peakNm: number,
