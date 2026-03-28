@@ -7,7 +7,7 @@ import { generateRecommendation, stageConfigs } from '@/lib/configurator-store';
 import { lookupVehicleSpec, getModelsForBrand } from '@/lib/vehicle-database';
 import type { Vehicle } from '@/types/models';
 
-const brands = ['Volkswagen', 'BMW', 'Mercedes-Benz', 'Audi', 'Porsche', 'Ford', 'Seat', 'Skoda'];
+const brands = ['Volkswagen', 'BMW', 'Mercedes-Benz', 'Audi', 'Porsche', 'Ford', 'Seat', 'Skoda', 'Toyota', 'Hyundai', 'Cupra', 'Kia', 'Renault', 'Nissan', 'Mazda', 'Subaru', 'Honda', 'Mitsubishi'];
 const transmissions: Vehicle['transmission'][] = ['manual', 'automatic', 'dsg', 'dct', 'cvt'];
 const fuelTypes: Vehicle['fuel_type'][] = ['petrol', 'diesel', 'hybrid', 'electric'];
 
