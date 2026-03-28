@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Car, Zap, AlertTriangle, ArrowLeft, Share2, Gauge,
-  Shield, Clock, Copy, Check,
+  Shield, Clock, Copy, Check, Euro,
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -10,7 +10,7 @@ import {
   ResponsiveContainer, Legend,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { getResult, stageConfigs } from '@/lib/configurator-store';
+import { getResult, stageConfigs, getStageTotalPrice, formatPrice } from '@/lib/configurator-store';
 
 const riskLabels: Record<string, { label: string; color: string }> = {
   low: { label: 'Niedrig', color: 'text-[hsl(var(--success))]' },
@@ -132,6 +132,9 @@ export default function ConfiguratorResultPage() {
                 <p className="text-[10px] text-primary font-semibold">
                   +{stageRec.delta_hp} PS · +{stageRec.delta_nm} Nm
                 </p>
+                <p className="text-xs font-bold text-foreground mt-1">
+                  {formatPrice(getStageTotalPrice(cfg))}
+                </p>
               </button>
             );
           })}
@@ -240,16 +243,27 @@ export default function ConfiguratorResultPage() {
             <p className="text-sm text-muted-foreground leading-relaxed">{rec.description}</p>
           </div>
           <div className="bg-card border border-border rounded-md p-6">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Komponenten</h3>
-            <div className="flex flex-wrap gap-2">
-              {rec.components.map((c) => (
-                <span
-                  key={c}
-                  className="px-2.5 py-1 rounded-sm bg-secondary text-secondary-foreground text-xs font-medium"
-                >
-                  {c}
+            <h3 className="text-sm font-semibold text-foreground mb-3">Komponenten & Preise</h3>
+            <div className="space-y-2">
+              {rec.components.map((c) => {
+                const price = stageConfigs[activeStage - 1].componentPrices[c] ?? 0;
+                return (
+                  <div key={c} className="flex items-center justify-between">
+                    <span className="px-2.5 py-1 rounded-sm bg-secondary text-secondary-foreground text-xs font-medium">
+                      {c}
+                    </span>
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      {price > 0 ? formatPrice(price) : 'inkl.'}
+                    </span>
+                  </div>
+                );
+              })}
+              <div className="border-t border-border pt-2 mt-3 flex items-center justify-between">
+                <span className="text-sm font-bold text-foreground">Gesamt</span>
+                <span className="text-sm font-bold text-primary">
+                  {formatPrice(getStageTotalPrice(stageConfigs[activeStage - 1]))}
                 </span>
-              ))}
+              </div>
             </div>
           </div>
         </motion.div>

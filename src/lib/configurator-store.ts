@@ -7,7 +7,17 @@ export interface StageConfig {
   nmMultiplier: number;
   risk: 'low' | 'medium' | 'high';
   components: string[];
+  basePrice: number;
+  componentPrices: Record<string, number>;
   description: (v: Vehicle) => string;
+}
+
+export function formatPrice(value: number): string {
+  return value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+}
+
+export function getStageTotalPrice(cfg: StageConfig): number {
+  return cfg.basePrice + Object.values(cfg.componentPrices).reduce((sum, p) => sum + p, 0);
 }
 
 export const stageConfigs: StageConfig[] = [
@@ -18,6 +28,12 @@ export const stageConfigs: StageConfig[] = [
     nmMultiplier: 0.20,
     risk: 'low',
     components: ['ECU-Remap', 'Ladedruck-Optimierung', 'Kennfeld-Anpassung'],
+    basePrice: 499,
+    componentPrices: {
+      'ECU-Remap': 499,
+      'Ladedruck-Optimierung': 0,
+      'Kennfeld-Anpassung': 0,
+    },
     description: (v) =>
       `Kennfeldoptimierung für ${v.brand} ${v.model} (${v.engine_code}). Anpassung von Zündung, Ladedruck und Einspritzmenge bei seriennaher Abstimmung mit vollem Komforterhalt.`,
   },
@@ -28,6 +44,14 @@ export const stageConfigs: StageConfig[] = [
     nmMultiplier: 0.30,
     risk: 'medium',
     components: ['ECU-Remap', 'Downpipe', 'Ladeluftkühler-Upgrade', 'Ansaugung', 'Ladedruck-Optimierung'],
+    basePrice: 799,
+    componentPrices: {
+      'ECU-Remap': 799,
+      'Downpipe': 890,
+      'Ladeluftkühler-Upgrade': 650,
+      'Ansaugung': 380,
+      'Ladedruck-Optimierung': 0,
+    },
     description: (v) =>
       `Performance-Paket für ${v.brand} ${v.model} (${v.engine_code}). Erweiterte Kennfeldoptimierung in Kombination mit Hardware-Upgrades für signifikant gesteigerte Leistung bei kontrolliertem Risiko.`,
   },
@@ -38,6 +62,16 @@ export const stageConfigs: StageConfig[] = [
     nmMultiplier: 0.45,
     risk: 'high',
     components: ['ECU-Remap', 'Turbo-Upgrade', 'Downpipe', 'Ladeluftkühler', 'Ansaugung', 'Kraftstoffpumpe', 'Kupplung/Getriebe-Upgrade'],
+    basePrice: 1299,
+    componentPrices: {
+      'ECU-Remap': 1299,
+      'Turbo-Upgrade': 2890,
+      'Downpipe': 890,
+      'Ladeluftkühler': 650,
+      'Ansaugung': 380,
+      'Kraftstoffpumpe': 490,
+      'Kupplung/Getriebe-Upgrade': 1890,
+    },
     description: (v) =>
       `Track-Ready-Umbau für ${v.brand} ${v.model} (${v.engine_code}). Maximale Leistungsausbeute durch Turbo-Upgrade und vollständige Hardware-Modifikation. Für erfahrene Fahrer und Rennstreckeneinsatz.`,
   },
