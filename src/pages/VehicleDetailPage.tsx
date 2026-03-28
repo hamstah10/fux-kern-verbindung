@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Car, Cpu, Gauge, Wrench, FileText, Edit2, Check, X } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
@@ -8,6 +8,7 @@ import { getConfiguredVehicles } from '@/lib/configurator-store';
 import type { LeadStatus, OrderStatus } from '@/types/models';
 import { useMemo } from 'react';
 import { toast } from 'sonner';
+import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
 
 const leadStatusToDisplay: Record<LeadStatus, 'success' | 'processing' | 'new' | 'warning' | 'error'> = {
   new: 'new', qualified: 'processing', in_progress: 'processing', converted: 'success', lost: 'error',
@@ -43,6 +44,16 @@ export default function VehicleDetailPage() {
   const [vinDraft, setVinDraft] = useState(vehicle?.vin ?? '');
   const [vin, setVin] = useState(vehicle?.vin ?? '');
   const [apiTrace, setApiTrace] = useState<string[]>([]);
+  const [activities, setActivities] = useState<ActivityEntry[]>(() => {
+    const initial: ActivityEntry[] = [];
+    if (vehicle) {
+      initial.push({ id: 'creation', timestamp: new Date(vehicle.created_at), type: 'creation', label: 'Fahrzeug erstellt' });
+    }
+    return initial;
+  });
+  const addActivity = useCallback((entry: Omit<ActivityEntry, 'id' | 'timestamp'>) => {
+    setActivities(prev => [{ ...entry, id: crypto.randomUUID(), timestamp: new Date() }, ...prev]);
+  }, []);
 
   if (!vehicle) {
     return (
@@ -67,14 +78,17 @@ export default function VehicleDetailPage() {
     setEditingNotes(false);
     const trace = `PATCH /api/v1/vehicles/${vehicle.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'note_edit', label: 'Notizen aktualisiert', detail: notesDraft.slice(0, 80) });
     toast.success('Notizen gespeichert');
   };
 
   const handleSaveVin = () => {
+    const oldVin = vin;
     setVin(vinDraft);
     setEditingVin(false);
     const trace = `PATCH /api/v1/vehicles/${vehicle.id} → 200 OK { vin: "${vinDraft}" }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'field_edit', label: 'VIN aktualisiert', oldValue: oldVin || '–', newValue: vinDraft });
     toast.success('VIN aktualisiert');
   };
 
@@ -274,6 +288,9 @@ export default function VehicleDetailPage() {
             </div>
           </div>
         )}
+
+        {/* Activity Timeline */}
+        <ActivityTimeline activities={activities} />
 
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">

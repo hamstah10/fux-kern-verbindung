@@ -1,11 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Shield, Calendar, Clock, Wrench, User, Car, Building2, MessageSquare, Edit2, Check, X } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockDealerRequests, mockLeads, mockVehicles, mockDealers, dealerRequestStatusLabels } from '@/lib/mock-data';
 import type { DealerRequestStatus } from '@/types/models';
 import { toast } from 'sonner';
+import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
 
 const drStatusDisplay: Record<DealerRequestStatus, 'new' | 'processing' | 'success' | 'error'> = {
   pending: 'new', accepted: 'processing', in_progress: 'processing', completed: 'success', rejected: 'error',
@@ -26,6 +27,16 @@ export default function DealerRequestDetailPage() {
   const [editingHours, setEditingHours] = useState(false);
   const [hoursDraft, setHoursDraft] = useState(String(estimatedHours));
   const [apiTrace, setApiTrace] = useState<string[]>([]);
+  const [activities, setActivities] = useState<ActivityEntry[]>(() => {
+    const initial: ActivityEntry[] = [];
+    if (request) {
+      initial.push({ id: 'creation', timestamp: new Date(request.created_at), type: 'creation', label: 'Anfrage erstellt' });
+    }
+    return initial;
+  });
+  const addActivity = useCallback((entry: Omit<ActivityEntry, 'id' | 'timestamp'>) => {
+    setActivities(prev => [{ ...entry, id: crypto.randomUUID(), timestamp: new Date() }, ...prev]);
+  }, []);
 
   if (!request) {
     return (
@@ -46,9 +57,11 @@ export default function DealerRequestDetailPage() {
   const currentStepIndex = currentStatus === 'rejected' ? -1 : statusSteps.indexOf(currentStatus);
 
   const handleStatusChange = (newStatus: DealerRequestStatus) => {
+    const oldStatus = currentStatus;
     setCurrentStatus(newStatus);
     const trace = `PATCH /api/v1/dealer-requests/${request.id} → 200 OK { status: "${newStatus}" }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'status_change', label: 'Status geändert', oldValue: dealerRequestStatusLabels[oldStatus], newValue: dealerRequestStatusLabels[newStatus] });
     toast.success(`Status geändert: ${dealerRequestStatusLabels[newStatus]}`);
   };
 
@@ -57,16 +70,19 @@ export default function DealerRequestDetailPage() {
     setEditingNotes(false);
     const trace = `PATCH /api/v1/dealer-requests/${request.id} → 200 OK { notes: "${notesDraft.slice(0, 40)}..." }`;
     setApiTrace(prev => [trace, ...prev]);
+    addActivity({ type: 'note_edit', label: 'Notizen aktualisiert', detail: notesDraft.slice(0, 80) });
     toast.success('Notizen gespeichert');
   };
 
   const handleSaveHours = () => {
     const parsed = parseFloat(hoursDraft);
     if (!isNaN(parsed) && parsed > 0) {
+      const oldHours = estimatedHours;
       setEstimatedHours(parsed);
       setEditingHours(false);
       const trace = `PATCH /api/v1/dealer-requests/${request.id} → 200 OK { estimated_duration_hours: ${parsed} }`;
       setApiTrace(prev => [trace, ...prev]);
+      addActivity({ type: 'field_edit', label: 'Geschätzte Dauer geändert', oldValue: `${oldHours}h`, newValue: `${parsed}h` });
       toast.success('Geschätzte Dauer aktualisiert');
     }
   };
@@ -241,6 +257,9 @@ export default function DealerRequestDetailPage() {
             )}
           </AnimatePresence>
         </DataCard>
+
+        {/* Activity Timeline */}
+        <ActivityTimeline activities={activities} />
 
         {/* API Trace */}
         <div className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5 mt-8">
