@@ -73,7 +73,7 @@ export default function ConfiguratorResultPage() {
       <header className="border-b border-border">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="text-lg font-bold tracking-tight text-foreground">
-            Tuning<span className="text-primary">Fux</span>
+            Tuning<span className="text-destructive">Fux</span>
           </a>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={handleCopyLink} className="gap-1.5 text-xs">
@@ -100,7 +100,7 @@ export default function ConfiguratorResultPage() {
         >
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Car className="h-4 w-4 text-primary" />
+              <Car className="h-4 w-4 text-destructive" />
               <span className="text-xs text-muted-foreground font-mono uppercase tracking-wider">
                 {vehicle.engine_code} · {vehicle.ecu_type || 'ECU unbekannt'}
               </span>
@@ -131,12 +131,12 @@ export default function ConfiguratorResultPage() {
                 onClick={() => setActiveStage(cfg.stageId)}
                 className={`flex-1 p-3 rounded-md border text-left transition-all ${
                   isActive
-                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                    ? 'border-destructive bg-destructive/5 ring-1 ring-destructive'
                     : 'border-border bg-card hover:border-muted-foreground/30'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-destructive' : 'text-muted-foreground'}`}>
                     Stage {cfg.stageId}
                   </span>
                   <span className={`text-[10px] ${riskLabels[cfg.risk].color}`}>
@@ -146,7 +146,7 @@ export default function ConfiguratorResultPage() {
                 <p className="text-sm font-bold text-foreground">
                   {stageRec.estimated_hp} PS / {stageRec.estimated_nm} Nm
                 </p>
-                <p className="text-[10px] text-primary font-semibold">
+                <p className="text-[10px] text-destructive font-semibold">
                   +{stageRec.delta_hp} PS · +{stageRec.delta_nm} Nm
                 </p>
                 <p className="text-xs font-bold text-foreground mt-1">
@@ -209,7 +209,7 @@ export default function ConfiguratorResultPage() {
               onClick={() => setCompareMode((prev) => !prev)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium transition-all ${
                 compareMode
-                  ? 'border-primary bg-primary/10 text-primary'
+                  ? 'border-destructive bg-destructive/10 text-destructive'
                   : 'border-border bg-secondary text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -313,7 +313,7 @@ export default function ConfiguratorResultPage() {
               })}
               <div className="border-t border-border pt-2 mt-3 flex items-center justify-between">
                 <span className="text-sm font-bold text-foreground">Gesamt</span>
-                <span className="text-sm font-bold text-primary">
+                <span className="text-sm font-bold text-destructive">
                   {formatPrice(getStageTotalPrice(stageConfigs[activeStage - 1]))}
                 </span>
               </div>
@@ -369,7 +369,7 @@ function StatCard({
     <div className="bg-card border border-border rounded-md p-4">
       <div className="flex items-center gap-1.5 mb-2 text-muted-foreground">{icon}<span className="text-[10px] uppercase tracking-wider font-medium">{label}</span></div>
       <p className={`text-lg font-bold ${valueClass ?? 'text-foreground'}`}>{value}</p>
-      {sub && <p className="text-xs text-primary font-semibold mt-0.5">{sub}</p>}
+      {sub && <p className="text-xs text-destructive font-semibold mt-0.5">{sub}</p>}
     </div>
   );
 }
