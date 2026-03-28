@@ -7,6 +7,7 @@ import { mockOrders, mockVehicles, mockLeads, mockDealers, mockRecommendations, 
 import type { OrderStatus } from '@/types/models';
 import { toast } from 'sonner';
 import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
+import { PinToTabButton } from '@/components/PinToTabButton';
 
 const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
   draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
