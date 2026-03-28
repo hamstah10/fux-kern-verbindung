@@ -240,13 +240,13 @@ export default function ConfiguratorResultPage() {
                   />
                   <Legend wrapperStyle={{ fontSize: '12px' }} />
                   {/* Stage 1 */}
-                  <Line type="monotone" dataKey="ps1" name="S1 PS" stroke="hsl(22 90% 55%)" strokeWidth={1.5} dot={false} strokeDasharray="6 3" />
+                  <Line type="monotone" dataKey="ps1" name="S1 PS" stroke="hsl(var(--destructive))" strokeWidth={1.5} dot={false} strokeDasharray="6 3" />
                   <Line type="monotone" dataKey="nm1" name="S1 Nm" stroke="hsl(210 80% 55%)" strokeWidth={1.5} dot={false} strokeDasharray="6 3" />
                   {/* Stage 2 */}
-                  <Line type="monotone" dataKey="ps2" name="S2 PS" stroke="hsl(22 90% 55%)" strokeWidth={2} dot={false} strokeDasharray="3 2" />
+                  <Line type="monotone" dataKey="ps2" name="S2 PS" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} strokeDasharray="3 2" />
                   <Line type="monotone" dataKey="nm2" name="S2 Nm" stroke="hsl(210 80% 55%)" strokeWidth={2} dot={false} strokeDasharray="3 2" />
                   {/* Stage 3 */}
-                  <Line type="monotone" dataKey="ps3" name="S3 PS" stroke="hsl(22 90% 55%)" strokeWidth={2.5} dot={false} />
+                  <Line type="monotone" dataKey="ps3" name="S3 PS" stroke="hsl(var(--destructive))" strokeWidth={2.5} dot={false} />
                   <Line type="monotone" dataKey="nm3" name="S3 Nm" stroke="hsl(210 80% 55%)" strokeWidth={2.5} dot={false} />
                 </LineChart>
               ) : (
@@ -269,7 +269,7 @@ export default function ConfiguratorResultPage() {
                     labelFormatter={(rpm) => `${rpm} RPM`}
                   />
                   <Legend wrapperStyle={{ fontSize: '12px' }} />
-                  <Line type="monotone" dataKey="power" name="PS" stroke="hsl(22 90% 55%)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="power" name="PS" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} />
                   <Line type="monotone" dataKey="torque" name="Nm" stroke="hsl(210 80% 55%)" strokeWidth={2} dot={false} />
                 </LineChart>
               )}
@@ -277,9 +277,9 @@ export default function ConfiguratorResultPage() {
           </div>
           {compareMode && (
             <div className="flex items-center justify-center gap-6 mt-3 text-[11px] text-muted-foreground">
-              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2 border-dashed" style={{ borderColor: 'hsl(22 90% 55%)' }} /> Stage 1 (d{"\u00FC"}nn)</span>
-              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2" style={{ borderColor: 'hsl(22 90% 55%)', borderStyle: 'dotted' }} /> Stage 2 (mittel)</span>
-              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2" style={{ borderColor: 'hsl(22 90% 55%)' }} /> Stage 3 (fett)</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2 border-dashed border-destructive" /> Stage 1 (dünn)</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2 border-destructive" style={{ borderStyle: 'dotted' }} /> Stage 2 (mittel)</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 border-t-2 border-destructive" /> Stage 3 (fett)</span>
             </div>
           )}
         </motion.div>
