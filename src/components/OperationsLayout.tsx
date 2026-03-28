@@ -1,9 +1,8 @@
-import { useState, useCallback } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Circle } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const navItems = [
   { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
