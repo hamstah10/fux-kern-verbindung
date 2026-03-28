@@ -148,8 +148,14 @@ export default function OperationsTicketsPage() {
                             </span>
                           </div>
                         </div>
-                        <StatusBadge status={statusDisplay[ticket.status]} label={statusLabels[ticket.status]} />
-                      </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <StatusBadge status={statusDisplay[ticket.status]} label={statusLabels[ticket.status]} />
+                          <PinToTabButton
+                            type="ticket"
+                            label={`${ticket.id} – ${ticket.subject.slice(0, 30)}`}
+                            path={`/operations/tickets?id=${ticket.id}`}
+                          />
+                        </div>
                     </DataCard>
                   </button>
                 </motion.div>

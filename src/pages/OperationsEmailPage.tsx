@@ -153,6 +153,11 @@ export default function OperationsEmailPage() {
                       </div>
 
                       {email.attachment && <Paperclip className="h-3 w-3 text-muted-foreground shrink-0" />}
+                      <PinToTabButton
+                        type="email"
+                        label={`${email.subject.slice(0, 30)}`}
+                        path={`/operations/email?id=${email.id}`}
+                      />
                     </div>
                   </button>
                 </motion.div>
