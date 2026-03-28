@@ -11,7 +11,6 @@ const columns: { status: OrderStatus; color: string }[] = [
   { status: 'draft', color: 'bg-muted-foreground' },
   { status: 'confirmed', color: 'bg-[hsl(var(--processing))]' },
   { status: 'in_progress', color: 'bg-[hsl(var(--processing))]' },
-  { status: 'quality_check', color: 'bg-[hsl(var(--warning))]' },
   { status: 'completed', color: 'bg-[hsl(var(--success))]' },
   { status: 'delivered', color: 'bg-[hsl(var(--success))]' },
 ];
