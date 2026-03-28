@@ -91,6 +91,11 @@ export default function OperationsOrdersPage() {
                       <div className="flex items-center gap-4">
                         <span className="text-sm font-bold text-foreground font-mono-data">€{order.total_eur.toLocaleString('de-DE')}</span>
                         <StatusBadge status={orderStatusDisplay[order.status]} label={orderStatusLabels[order.status]} />
+                        <PinToTabButton
+                          type="order"
+                          label={`${order.id} – ${lead?.name ?? 'Auftrag'}`}
+                          path={`/operations/orders/${order.id}`}
+                        />
                       </div>
                     </div>
                   </DataCard>

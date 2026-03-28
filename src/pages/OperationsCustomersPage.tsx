@@ -115,6 +115,11 @@ export default function OperationsCustomersPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <StatusBadge status={leadStatusToDisplay[lead.status]} label={leadStatusLabels[lead.status]} />
+                      <PinToTabButton
+                        type="customer"
+                        label={lead.name}
+                        path={`/operations/customers?id=${lead.id}`}
+                      />
                       <Link to={`/admin/leads/${lead.id}`} className="text-muted-foreground hover:text-foreground transition-colors">
                         <ExternalLink className="h-3.5 w-3.5" />
                       </Link>
