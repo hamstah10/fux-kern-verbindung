@@ -21,7 +21,7 @@ export default function MyGaragePage() {
       {/* Vehicle Cards */}
       <div className="mb-8">
         <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-          <Car className="h-4 w-4 text-primary" /> Meine Fahrzeuge
+          <Car className="h-4 w-4 text-destructive" /> Meine Fahrzeuge
         </h2>
         <div className="grid grid-cols-2 gap-3">
           {userVehicles.map((v, i) => {
@@ -53,7 +53,7 @@ export default function MyGaragePage() {
                     {rec && (
                       <div>
                         <span className="text-muted-foreground">Prognose</span>
-                        <p className="font-mono-data text-primary">{rec.estimated_hp} PS / {rec.estimated_nm} Nm</p>
+                        <p className="font-mono-data text-destructive">{rec.estimated_hp} PS / {rec.estimated_nm} Nm</p>
                       </div>
                     )}
                   </div>
@@ -74,7 +74,7 @@ export default function MyGaragePage() {
       {/* Orders */}
       <div className="mb-8">
         <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-          <ShoppingCart className="h-4 w-4 text-primary" /> Auftragsstatus
+          <ShoppingCart className="h-4 w-4 text-destructive" /> Auftragsstatus
         </h2>
         <div className="space-y-2">
           {userOrders.map((order, i) => {
