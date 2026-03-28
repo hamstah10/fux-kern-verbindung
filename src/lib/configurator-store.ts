@@ -1,11 +1,57 @@
 import type { Vehicle, Recommendation, DynoDataPoint } from '@/types/models';
 
+export interface StageConfig {
+  stageId: number;
+  label: string;
+  hpMultiplier: number;
+  nmMultiplier: number;
+  risk: 'low' | 'medium' | 'high';
+  components: string[];
+  description: (v: Vehicle) => string;
+}
+
+export const stageConfigs: StageConfig[] = [
+  {
+    stageId: 1,
+    label: 'Stage 1 – ECU Optimierung',
+    hpMultiplier: 0.22,
+    nmMultiplier: 0.20,
+    risk: 'low',
+    components: ['ECU-Remap', 'Ladedruck-Optimierung', 'Kennfeld-Anpassung'],
+    description: (v) =>
+      `Kennfeldoptimierung für ${v.brand} ${v.model} (${v.engine_code}). Anpassung von Zündung, Ladedruck und Einspritzmenge bei seriennaher Abstimmung mit vollem Komforterhalt.`,
+  },
+  {
+    stageId: 2,
+    label: 'Stage 2 – Performance',
+    hpMultiplier: 0.35,
+    nmMultiplier: 0.30,
+    risk: 'medium',
+    components: ['ECU-Remap', 'Downpipe', 'Ladeluftkühler-Upgrade', 'Ansaugung', 'Ladedruck-Optimierung'],
+    description: (v) =>
+      `Performance-Paket für ${v.brand} ${v.model} (${v.engine_code}). Erweiterte Kennfeldoptimierung in Kombination mit Hardware-Upgrades für signifikant gesteigerte Leistung bei kontrolliertem Risiko.`,
+  },
+  {
+    stageId: 3,
+    label: 'Stage 3 – Track Ready',
+    hpMultiplier: 0.55,
+    nmMultiplier: 0.45,
+    risk: 'high',
+    components: ['ECU-Remap', 'Turbo-Upgrade', 'Downpipe', 'Ladeluftkühler', 'Ansaugung', 'Kraftstoffpumpe', 'Kupplung/Getriebe-Upgrade'],
+    description: (v) =>
+      `Track-Ready-Umbau für ${v.brand} ${v.model} (${v.engine_code}). Maximale Leistungsausbeute durch Turbo-Upgrade und vollständige Hardware-Modifikation. Für erfahrene Fahrer und Rennstreckeneinsatz.`,
+  },
+];
+
 export interface ConfiguratorResult {
   id: string;
   createdAt: string;
   vehicle: Vehicle;
-  recommendation: Recommendation;
-  dynoPoints: DynoDataPoint[];
+  selectedStage: number;
+  stages: {
+    recommendation: Recommendation;
+    dynoPoints: DynoDataPoint[];
+  }[];
 }
 
 // In-memory store (simulates API persistence)
@@ -42,44 +88,46 @@ export function generateDynoCurve(
   return points;
 }
 
-// Simulates AI recommendation generation
-export function generateRecommendation(vehicle: Vehicle): ConfiguratorResult {
+// Simulates AI recommendation generation for all stages
+export function generateRecommendation(vehicle: Vehicle, selectedStage: number = 1): ConfiguratorResult {
   const id = crypto.randomUUID();
 
-  const stage1Hp = Math.round(vehicle.stock_hp * 0.22);
-  const stage1Nm = Math.round(vehicle.stock_nm * 0.2);
-  const estimatedHp = vehicle.stock_hp + stage1Hp;
-  const estimatedNm = vehicle.stock_nm + stage1Nm;
+  const stages = stageConfigs.map((cfg) => {
+    const deltaHp = Math.round(vehicle.stock_hp * cfg.hpMultiplier);
+    const deltaNm = Math.round(vehicle.stock_nm * cfg.nmMultiplier);
+    const estimatedHp = vehicle.stock_hp + deltaHp;
+    const estimatedNm = vehicle.stock_nm + deltaNm;
 
-  const riskLevel: 'low' | 'medium' | 'high' =
-    stage1Hp / vehicle.stock_hp > 0.25 ? 'medium' : 'low';
+    const recommendation: Recommendation = {
+      id: `rec-${id.slice(0, 8)}-s${cfg.stageId}`,
+      created_at: new Date().toISOString(),
+      vehicle_id: vehicle.id,
+      stage_id: cfg.stageId,
+      stage_label: cfg.label,
+      delta_hp: deltaHp,
+      delta_nm: deltaNm,
+      estimated_hp: estimatedHp,
+      estimated_nm: estimatedNm,
+      risk_assessment: cfg.risk,
+      description: cfg.description(vehicle),
+      disclaimer:
+        'Alle Werte sind fahrzeugspezifische Prognosen basierend auf Referenzmessungen vergleichbarer Fahrzeuge. Tatsächliche Ergebnisse können je nach Zustand, Laufleistung und Umgebungsbedingungen abweichen.',
+      components: cfg.components,
+    };
 
-  const recommendation: Recommendation = {
-    id: `rec-${id.slice(0, 8)}`,
-    created_at: new Date().toISOString(),
-    vehicle_id: vehicle.id,
-    stage_id: 1,
-    stage_label: 'Stage 1 – ECU Optimierung',
-    delta_hp: stage1Hp,
-    delta_nm: stage1Nm,
-    estimated_hp: estimatedHp,
-    estimated_nm: estimatedNm,
-    risk_assessment: riskLevel,
-    description: `Kennfeldoptimierung für ${vehicle.brand} ${vehicle.model} (${vehicle.engine_code}). Anpassung von Zündung, Ladedruck und Einspritzmenge bei seriennaher Abstimmung mit vollem Komforterhalt.`,
-    disclaimer:
-      'Alle Werte sind fahrzeugspezifische Prognosen basierend auf Referenzmessungen vergleichbarer Fahrzeuge. Tatsächliche Ergebnisse können je nach Zustand, Laufleistung und Umgebungsbedingungen abweichen.',
-    components: ['ECU-Remap', 'Ladedruck-Optimierung', 'Kennfeld-Anpassung'],
-  };
+    const peakHpRpm = vehicle.fuel_type === 'diesel' ? 4200 : 5500;
+    const peakNmRpm = vehicle.fuel_type === 'diesel' ? 2200 : 3200;
+    const dynoPoints = generateDynoCurve(estimatedHp, estimatedNm, peakHpRpm, peakNmRpm);
 
-  const peakHpRpm = vehicle.fuel_type === 'diesel' ? 4200 : 5500;
-  const peakNmRpm = vehicle.fuel_type === 'diesel' ? 2200 : 3200;
+    return { recommendation, dynoPoints };
+  });
 
   const result: ConfiguratorResult = {
     id,
     createdAt: new Date().toISOString(),
     vehicle,
-    recommendation,
-    dynoPoints: generateDynoCurve(estimatedHp, estimatedNm, peakHpRpm, peakNmRpm),
+    selectedStage,
+    stages,
   };
 
   saveResult(result);

@@ -10,7 +10,7 @@ import {
   ResponsiveContainer, Legend,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { getResult } from '@/lib/configurator-store';
+import { getResult, stageConfigs } from '@/lib/configurator-store';
 
 const riskLabels: Record<string, { label: string; color: string }> = {
   low: { label: 'Niedrig', color: 'text-[hsl(var(--success))]' },
@@ -22,6 +22,7 @@ export default function ConfiguratorResultPage() {
   const { id } = useParams<{ id: string }>();
   const result = id ? getResult(id) : undefined;
   const [copied, setCopied] = useState(false);
+  const [activeStage, setActiveStage] = useState(result?.selectedStage ?? 1);
 
   if (!result) {
     return (
@@ -38,7 +39,10 @@ export default function ConfiguratorResultPage() {
     );
   }
 
-  const { vehicle, recommendation: rec, dynoPoints } = result;
+  const { vehicle, stages } = result;
+  const stageData = stages[activeStage - 1];
+  const rec = stageData.recommendation;
+  const dynoPoints = stageData.dynoPoints;
   const risk = riskLabels[rec.risk_assessment];
 
   const handleCopyLink = async () => {
@@ -89,14 +93,48 @@ export default function ConfiguratorResultPage() {
               <span className="text-muted-foreground font-normal">({vehicle.year})</span>
             </h1>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="px-2.5 py-1 rounded-sm bg-primary/10 text-primary text-xs font-semibold">
-              {rec.stage_label}
-            </span>
-            <span className="text-xs text-muted-foreground font-mono">
-              ID: {result.id.slice(0, 8)}
-            </span>
-          </div>
+          <span className="text-xs text-muted-foreground font-mono">
+            ID: {result.id.slice(0, 8)}
+          </span>
+        </motion.div>
+
+        {/* Stage Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.05 }}
+          className="flex gap-2"
+        >
+          {stageConfigs.map((cfg) => {
+            const isActive = activeStage === cfg.stageId;
+            const stageRec = stages[cfg.stageId - 1].recommendation;
+            return (
+              <button
+                key={cfg.stageId}
+                onClick={() => setActiveStage(cfg.stageId)}
+                className={`flex-1 p-3 rounded-md border text-left transition-all ${
+                  isActive
+                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                    : 'border-border bg-card hover:border-muted-foreground/30'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                    Stage {cfg.stageId}
+                  </span>
+                  <span className={`text-[10px] ${riskLabels[cfg.risk].color}`}>
+                    {riskLabels[cfg.risk].label}
+                  </span>
+                </div>
+                <p className="text-sm font-bold text-foreground">
+                  {stageRec.estimated_hp} PS / {stageRec.estimated_nm} Nm
+                </p>
+                <p className="text-[10px] text-primary font-semibold">
+                  +{stageRec.delta_hp} PS · +{stageRec.delta_nm} Nm
+                </p>
+              </button>
+            );
+          })}
         </motion.div>
 
         {/* Stats Row */}
@@ -143,7 +181,7 @@ export default function ConfiguratorResultPage() {
           className="bg-card border border-border rounded-md p-6"
         >
           <h2 className="text-sm font-semibold text-foreground mb-4">
-            Prognostizierte Leistungskurve
+            Prognostizierte Leistungskurve – {rec.stage_label}
           </h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -234,12 +272,12 @@ export default function ConfiguratorResultPage() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="text-[11px] text-muted-foreground/60 font-mono space-y-0.5"
         >
-          <p>POST /api/v1/configurator/generate → 201 Created</p>
+          <p>POST /api/v1/configurator/generate → 201 Created (stages: 1–3)</p>
           <p>
             GET /api/v1/configurator/{result.id.slice(0, 8)} → 200 OK
           </p>
           <p>
-            Response: {JSON.stringify({ recommendation_id: rec.id, vehicle_id: vehicle.id }).slice(0, 80)}
+            Response: {JSON.stringify({ recommendation_id: rec.id, stage: activeStage, vehicle_id: vehicle.id }).slice(0, 100)}
           </p>
         </motion.div>
       </main>
