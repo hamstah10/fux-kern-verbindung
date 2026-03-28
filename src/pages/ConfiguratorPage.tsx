@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge } from 'lucide-react';
+import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateRecommendation, stageConfigs } from '@/lib/configurator-store';
+import { lookupVehicleSpec, getModelsForBrand } from '@/lib/vehicle-database';
 import type { Vehicle } from '@/types/models';
 
 const brands = ['Volkswagen', 'BMW', 'Mercedes-Benz', 'Audi', 'Porsche', 'Ford', 'Seat', 'Skoda'];
