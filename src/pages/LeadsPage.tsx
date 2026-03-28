@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { SectionHeader, StatusBadge, DataCard, EmptyState } from '@/components/DataComponents';
 import { mockLeads, sourceLabels, leadStatusLabels } from '@/lib/mock-data';
 import type { Lead, LeadStatus } from '@/types/models';
 import { motion } from 'framer-motion';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, ExternalLink } from 'lucide-react';
 
 const leadStatusToDisplay: Record<LeadStatus, 'success' | 'processing' | 'new' | 'warning' | 'error'> = {
   new: 'new', qualified: 'processing', in_progress: 'processing', converted: 'success', lost: 'error',
@@ -95,6 +96,9 @@ function LeadRow({ lead, index, onStatusChange }: { lead: Lead; index: number; o
         <span className="text-xs text-muted-foreground">{sourceLabels[lead.source_metadata.type]}</span>
         <StatusBadge status={leadStatusToDisplay[lead.status]} label={leadStatusLabels[lead.status]} />
         <span className="text-xs text-muted-foreground font-mono-data w-20 text-right">{timeAgo}</span>
+        <Link to={`/admin/leads/${lead.id}`} onClick={e => e.stopPropagation()} className="text-muted-foreground hover:text-foreground transition-colors">
+          <ExternalLink className="h-3.5 w-3.5" />
+        </Link>
       </div>
       {expanded && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-3 border-t border-border/50 bg-muted/10">
