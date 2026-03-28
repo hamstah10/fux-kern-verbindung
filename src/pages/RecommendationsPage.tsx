@@ -29,7 +29,7 @@ export default function RecommendationsPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="h-4 w-4 text-primary" />
+                      <Sparkles className="h-4 w-4 text-[#7a0000]" />
                       <h3 className="text-sm font-semibold text-foreground">{rec.stage_label}</h3>
                     </div>
                     {vehicle && (
