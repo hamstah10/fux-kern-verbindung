@@ -15,6 +15,7 @@ export default function LandingPage() {
             <Link to="/configurator" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Konfigurator</Link>
             <Link to="/my-garage" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Kundenportal</Link>
             <Link to="/dealer" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Händlerportal</Link>
+            <Link to="/operations" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Operations</Link>
             <Link to="/admin" className="px-4 py-2 text-sm rounded-sm text-primary-foreground transition-colors bg-destructive">Admin</Link>
           </div>
         </div>
