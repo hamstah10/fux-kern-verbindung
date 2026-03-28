@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GripVertical, User, Car, Euro, X, Calendar, Package, Building2, ExternalLink } from 'lucide-react';
+import { GripVertical, User, Car, Euro, X, Calendar, Package, Building2, ExternalLink, Search, Filter, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockLeads, mockVehicles, mockDealers, mockRecommendations, orderStatusLabels } from '@/lib/mock-data';
@@ -32,6 +32,32 @@ export default function OperationsKanbanPage() {
   });
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [search, setSearch] = useState('');
+  const [hiddenCols, setHiddenCols] = useState<Set<OrderStatus>>(new Set());
+
+  const toggleCol = useCallback((status: OrderStatus) => {
+    setHiddenCols(prev => {
+      const next = new Set(prev);
+      if (next.has(status)) next.delete(status); else next.add(status);
+      return next;
+    });
+  }, []);
+
+  // Filter orders by search term
+  const filteredByStatus = useMemo(() => {
+    if (!search.trim()) return ordersByStatus;
+    const q = search.toLowerCase();
+    const result: Record<OrderStatus, Order[]> = { draft: [], confirmed: [], in_progress: [], quality_check: [], completed: [], delivered: [] };
+    for (const status of Object.keys(ordersByStatus) as OrderStatus[]) {
+      result[status] = ordersByStatus[status].filter(order => {
+        const lead = mockLeads.find(l => l.id === order.lead_id);
+        const vehicle = mockVehicles.find(v => v.id === order.vehicle_id);
+        const haystack = `${order.id} ${lead?.name ?? ''} ${lead?.email ?? ''} ${vehicle?.brand ?? ''} ${vehicle?.model ?? ''} ${order.items.join(' ')} ${order.total_eur}`.toLowerCase();
+        return haystack.includes(q);
+      });
+    }
+    return result;
+  }, [ordersByStatus, search]);
 
   const dragItem = useRef<{ orderId: string; fromStatus: OrderStatus } | null>(null);
   const [dragOverCol, setDragOverCol] = useState<OrderStatus | null>(null);
@@ -87,21 +113,58 @@ export default function OperationsKanbanPage() {
   }, []);
 
   const totalOrders = Object.values(ordersByStatus).reduce((sum, arr) => sum + arr.length, 0);
+  const visibleOrders = Object.values(filteredByStatus).reduce((sum, arr) => sum + arr.length, 0);
 
   return (
     <div className="p-6 h-[calc(100vh-3.5rem)] flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Kanban Board</h1>
-          <p className="text-sm text-muted-foreground">{totalOrders} Aufträge · Drag & Drop zum Verschieben</p>
+          <p className="text-sm text-muted-foreground">
+            {search ? `${visibleOrders} von ${totalOrders}` : totalOrders} Aufträge · Drag & Drop zum Verschieben
+          </p>
+        </div>
+      </div>
+
+      {/* Search & Column Filter */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Kunde, Fahrzeug, Betrag..."
+            className="w-full pl-9 pr-8 py-1.5 text-sm rounded-sm bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              <XCircle className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <Filter className="h-3.5 w-3.5 text-muted-foreground mr-1" />
+          {columns.map(col => (
+            <button
+              key={col.status}
+              onClick={() => toggleCol(col.status)}
+              className={`px-2 py-1 text-[10px] rounded-sm transition-all ${
+                hiddenCols.has(col.status)
+                  ? 'bg-secondary/50 text-muted-foreground line-through'
+                  : 'bg-secondary text-secondary-foreground'
+              }`}
+            >
+              {orderStatusLabels[col.status]}
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="flex-1 flex gap-0 min-h-0">
         {/* Board */}
         <div className={`flex-1 flex gap-3 overflow-x-auto pb-2 min-h-0 transition-all ${selectedOrder ? 'mr-0' : ''}`}>
-          {columns.map(col => {
-            const orders = ordersByStatus[col.status];
+          {columns.filter(col => !hiddenCols.has(col.status)).map(col => {
+            const orders = filteredByStatus[col.status];
             const isOver = dragOverCol === col.status;
 
             return (
