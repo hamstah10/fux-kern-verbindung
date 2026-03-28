@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge } from 'lucide-react';
+import { Car, Zap, ArrowRight, Loader2, Shield, AlertTriangle, Gauge, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { generateRecommendation, stageConfigs } from '@/lib/configurator-store';
+import { lookupVehicleSpec, getModelsForBrand } from '@/lib/vehicle-database';
 import type { Vehicle } from '@/types/models';
 
 const brands = ['Volkswagen', 'BMW', 'Mercedes-Benz', 'Audi', 'Porsche', 'Ford', 'Seat', 'Skoda'];
@@ -35,6 +36,8 @@ export default function ConfiguratorPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [selectedStage, setSelectedStage] = useState(1);
+  const [autoDetected, setAutoDetected] = useState(false);
+  const [suggestedModels, setSuggestedModels] = useState<string[]>([]);
   const [form, setForm] = useState({
     brand: '',
     model: '',
@@ -50,6 +53,38 @@ export default function ConfiguratorPage() {
   const isValid =
     form.brand.trim() !== '' &&
     form.model.trim() !== '';
+
+  // Auto-detect specs when brand/model/engine_code change
+  const tryAutoDetect = useCallback(() => {
+    if (!form.brand) return;
+    const spec = lookupVehicleSpec(form.brand, form.model, form.engine_code);
+    if (spec) {
+      setForm((prev) => ({
+        ...prev,
+        stock_hp: spec.stockHp,
+        stock_nm: spec.stockNm,
+        fuel_type: spec.fuelType,
+        engine_code: prev.engine_code || spec.engineCode,
+        ecu_type: prev.ecu_type || spec.ecuType || '',
+      }));
+      setAutoDetected(true);
+    } else {
+      setAutoDetected(false);
+    }
+  }, [form.brand, form.model, form.engine_code]);
+
+  useEffect(() => {
+    tryAutoDetect();
+  }, [tryAutoDetect]);
+
+  // Update suggested models when brand changes
+  useEffect(() => {
+    if (form.brand) {
+      setSuggestedModels(getModelsForBrand(form.brand));
+    } else {
+      setSuggestedModels([]);
+    }
+  }, [form.brand]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,6 +105,9 @@ export default function ConfiguratorPage() {
 
   const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (key === 'brand') {
+      setAutoDetected(false);
+    }
   };
 
   // Preview estimates based on current HP/Nm input
@@ -177,13 +215,26 @@ export default function ConfiguratorPage() {
                 </select>
               </Field>
               <Field label="Modell" required>
-                <input
-                  type="text"
-                  value={form.model}
-                  onChange={(e) => updateField('model', e.target.value)}
-                  placeholder="z. B. Golf 8 GTI"
-                  className="field-input"
-                />
+                {suggestedModels.length > 0 ? (
+                  <select
+                    value={form.model}
+                    onChange={(e) => updateField('model', e.target.value)}
+                    className="field-input"
+                  >
+                    <option value="">Modell wählen</option>
+                    {suggestedModels.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={form.model}
+                    onChange={(e) => updateField('model', e.target.value)}
+                    placeholder="z. B. Golf 8 GTI"
+                    className="field-input"
+                  />
+                )}
               </Field>
               <Field label="Baujahr">
                 <input
@@ -245,7 +296,24 @@ export default function ConfiguratorPage() {
               </Field>
             </div>
 
-            {/* Row 4: HP + NM */}
+            {/* Auto-Detect Banner */}
+            <AnimatePresence>
+              {autoDetected && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-2 p-3 rounded-md border border-primary/30 bg-primary/5"
+                >
+                  <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-xs text-primary font-medium">
+                    Fahrzeugdaten automatisch erkannt – Werte können manuell angepasst werden
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Serien-PS">
                 <input
