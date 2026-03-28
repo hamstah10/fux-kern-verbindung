@@ -1,6 +1,9 @@
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Circle } from 'lucide-react';
+import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const navItems = [
   { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
@@ -13,55 +16,184 @@ const navItems = [
   { label: 'Team', path: '/operations/team', icon: Users },
 ];
 
+const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
+  order: ClipboardList,
+  customer: UserCircle,
+  ticket: TicketCheck,
+  email: Mail,
+};
+
+let tabCounter = 0;
+
 export default function OperationsLayout() {
+  const [tabs, setTabs] = useState<OperationsTab[]>([]);
+  const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const addTab = useCallback((tab: Omit<OperationsTab, 'id' | 'color'>) => {
+    setTabs(prev => {
+      const existing = prev.find(t => t.path === tab.path);
+      if (existing) {
+        setActiveTabId(existing.id);
+        navigate(existing.path);
+        return prev;
+      }
+      const id = `tab-${++tabCounter}`;
+      const newTab: OperationsTab = { ...tab, id, color: null };
+      setActiveTabId(id);
+      navigate(tab.path);
+      return [...prev, newTab];
+    });
+  }, [navigate]);
+
+  const removeTab = useCallback((id: string) => {
+    setTabs(prev => {
+      const idx = prev.findIndex(t => t.id === id);
+      const newTabs = prev.filter(t => t.id !== id);
+      if (activeTabId === id) {
+        if (newTabs.length > 0) {
+          const newIdx = Math.min(idx, newTabs.length - 1);
+          setActiveTabId(newTabs[newIdx].id);
+          navigate(newTabs[newIdx].path);
+        } else {
+          setActiveTabId(null);
+          navigate('/operations');
+        }
+      }
+      return newTabs;
+    });
+  }, [activeTabId, navigate]);
+
+  const cycleTabColor = useCallback((id: string) => {
+    setTabs(prev => prev.map(t => {
+      if (t.id !== id) return t;
+      const currentIdx = t.color ? TAB_COLORS.indexOf(t.color) : -1;
+      const nextIdx = (currentIdx + 1) % (TAB_COLORS.length + 1);
+      const nextColor = nextIdx === TAB_COLORS.length ? null : TAB_COLORS[nextIdx];
+      return { ...t, color: nextColor };
+    }));
+  }, []);
+
+  const handleTabClick = (tab: OperationsTab) => {
+    setActiveTabId(tab.id);
+    navigate(tab.path);
+  };
+
+  const addNewTab = (type: TabType) => {
+    const count = tabs.filter(t => t.type === type).length + 1;
+    const label = `${TAB_TYPE_LABELS[type]} ${count}`;
+    const pathMap: Record<TabType, string> = {
+      order: '/operations/orders',
+      customer: '/operations/customers',
+      ticket: '/operations/tickets',
+      email: '/operations/email',
+    };
+    addTab({ type, label, path: pathMap[type] });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-md">
-        <div className="flex items-center justify-between h-14 px-6">
-          {/* Logo / Brand */}
-          <Link to="/operations" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-sm bg-destructive flex items-center justify-center">
-              <span className="text-destructive-foreground font-bold text-sm">OP</span>
-            </div>
-            <span className="font-bold text-foreground text-lg tracking-tight">Operations</span>
-          </Link>
-
-          {/* Nav */}
-          <nav className="flex items-center gap-1">
-            {navItems.map(item => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                end={item.end}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
-                activeClassName="bg-secondary text-foreground font-medium"
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-
-          {/* Right side */}
-          <div className="flex items-center gap-3">
-            <Link
-              to="/admin"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Admin-CRM →
+    <OperationsTabsContext.Provider value={{ tabs, activeTabId, addTab, removeTab, setActiveTab: setActiveTabId, cycleTabColor }}>
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
+        {/* Header */}
+        <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-md">
+          <div className="flex items-center justify-between h-14 px-6">
+            <Link to="/operations" className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-sm bg-destructive flex items-center justify-center">
+                <span className="text-destructive-foreground font-bold text-sm">OP</span>
+              </div>
+              <span className="font-bold text-foreground text-lg tracking-tight">Operations</span>
             </Link>
-            <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-              <Settings className="h-4 w-4 text-muted-foreground" />
+
+            <nav className="flex items-center gap-1">
+              {navItems.map(item => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.end}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
+                  activeClassName="bg-secondary text-foreground font-medium"
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <Link to="/admin" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                Admin-CRM →
+              </Link>
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+                <Settings className="h-4 w-4 text-muted-foreground" />
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Content */}
-      <main className="flex-1">
-        <Outlet />
-      </main>
-    </div>
+        {/* Tabs Bar */}
+        <div className="border-b border-border bg-card/50 backdrop-blur-sm">
+          <div className="flex items-center h-9 px-6 gap-0.5 overflow-x-auto">
+            {tabs.map(tab => {
+              const Icon = TAB_TYPE_ICONS[tab.type];
+              const isActive = tab.id === activeTabId;
+              return (
+                <div
+                  key={tab.id}
+                  className={`group relative flex items-center gap-1.5 px-3 h-full text-xs cursor-pointer border-b-2 transition-all select-none shrink-0 ${
+                    isActive
+                      ? 'border-foreground text-foreground font-medium bg-secondary/40'
+                      : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/30'
+                  }`}
+                  style={tab.color ? { borderBottomColor: tab.color } : undefined}
+                  onClick={() => handleTabClick(tab)}
+                  onDoubleClick={() => cycleTabColor(tab.id)}
+                >
+                  {tab.color && (
+                    <span
+                      className="h-2 w-2 rounded-full shrink-0"
+                      style={{ backgroundColor: tab.color }}
+                    />
+                  )}
+                  <Icon className="h-3 w-3 shrink-0" />
+                  <span className="truncate max-w-[120px]">{tab.label}</span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removeTab(tab.id); }}
+                    className="ml-1 opacity-0 group-hover:opacity-100 hover:bg-secondary rounded-sm p-0.5 transition-opacity"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              );
+            })}
+
+            {/* Add Tab Button */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center justify-center h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors shrink-0 ml-1">
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-[160px]">
+                {(Object.keys(TAB_TYPE_LABELS) as TabType[]).map(type => {
+                  const Icon = TAB_TYPE_ICONS[type];
+                  return (
+                    <DropdownMenuItem key={type} onClick={() => addNewTab(type)} className="gap-2 text-xs">
+                      <Icon className="h-3.5 w-3.5" />
+                      {TAB_TYPE_LABELS[type]}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Content */}
+        <main className="flex-1">
+          <Outlet />
+        </main>
+      </div>
+    </OperationsTabsContext.Provider>
   );
 }
