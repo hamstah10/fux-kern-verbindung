@@ -36,6 +36,8 @@ export default function ConfiguratorPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [selectedStage, setSelectedStage] = useState(1);
+  const [autoDetected, setAutoDetected] = useState(false);
+  const [suggestedModels, setSuggestedModels] = useState<string[]>([]);
   const [form, setForm] = useState({
     brand: '',
     model: '',
@@ -51,6 +53,38 @@ export default function ConfiguratorPage() {
   const isValid =
     form.brand.trim() !== '' &&
     form.model.trim() !== '';
+
+  // Auto-detect specs when brand/model/engine_code change
+  const tryAutoDetect = useCallback(() => {
+    if (!form.brand) return;
+    const spec = lookupVehicleSpec(form.brand, form.model, form.engine_code);
+    if (spec) {
+      setForm((prev) => ({
+        ...prev,
+        stock_hp: spec.stockHp,
+        stock_nm: spec.stockNm,
+        fuel_type: spec.fuelType,
+        engine_code: prev.engine_code || spec.engineCode,
+        ecu_type: prev.ecu_type || spec.ecuType || '',
+      }));
+      setAutoDetected(true);
+    } else {
+      setAutoDetected(false);
+    }
+  }, [form.brand, form.model, form.engine_code]);
+
+  useEffect(() => {
+    tryAutoDetect();
+  }, [tryAutoDetect]);
+
+  // Update suggested models when brand changes
+  useEffect(() => {
+    if (form.brand) {
+      setSuggestedModels(getModelsForBrand(form.brand));
+    } else {
+      setSuggestedModels([]);
+    }
+  }, [form.brand]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +105,9 @@ export default function ConfiguratorPage() {
 
   const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (key === 'brand') {
+      setAutoDetected(false);
+    }
   };
 
   // Preview estimates based on current HP/Nm input
