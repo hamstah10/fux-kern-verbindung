@@ -116,7 +116,7 @@ export default function OperationsKanbanPage() {
   const visibleOrders = Object.values(filteredByStatus).reduce((sum, arr) => sum + arr.length, 0);
 
   return (
-    <div className="p-6 h-[calc(100vh-3.5rem)] flex flex-col">
+    <div className="p-6 h-[calc(100vh-3.5rem)] flex flex-col max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Kanban Board</h1>

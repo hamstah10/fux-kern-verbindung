@@ -61,7 +61,7 @@ export default function OperationsEmailPage() {
   };
 
   return (
-    <div className="p-6 h-[calc(100vh-3.5rem)] flex flex-col">
+    <div className="p-6 h-[calc(100vh-3.5rem)] flex flex-col max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col flex-1 min-h-0">
         <div className="flex items-center justify-between mb-1">
           <h1 className="text-2xl font-bold text-foreground">E-Mail</h1>
