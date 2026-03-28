@@ -28,7 +28,7 @@ export default function OperationsLayout() {
   const [tabs, setTabs] = useState<OperationsTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
+  
 
   const addTab = useCallback((tab: Omit<OperationsTab, 'id' | 'color'>) => {
     setTabs(prev => {
