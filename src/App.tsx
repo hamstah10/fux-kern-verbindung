@@ -31,8 +31,11 @@ import OperationsKanbanPage from "./pages/OperationsKanbanPage";
 import OperationsCalendarPage from "./pages/OperationsCalendarPage";
 import OperationsTeamPage from "./pages/OperationsTeamPage";
 import OperationsCustomersPage from "./pages/OperationsCustomersPage";
+import OperationsCustomerDetailPage from "./pages/OperationsCustomerDetailPage";
 import OperationsTicketsPage from "./pages/OperationsTicketsPage";
+import OperationsTicketDetailPage from "./pages/OperationsTicketDetailPage";
 import OperationsEmailPage from "./pages/OperationsEmailPage";
+import OperationsEmailDetailPage from "./pages/OperationsEmailDetailPage";
 
 const queryClient = new QueryClient();
 
