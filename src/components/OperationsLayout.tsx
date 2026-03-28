@@ -1,11 +1,13 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, Columns3, Settings } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Settings } from 'lucide-react';
 
 const navItems = [
   { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
   { label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
   { label: 'Kanban', path: '/operations/kanban', icon: Columns3 },
+  { label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
+  { label: 'Team', path: '/operations/team', icon: Users },
 ];
 
 export default function OperationsLayout() {
