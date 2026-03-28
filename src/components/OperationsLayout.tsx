@@ -167,24 +167,7 @@ export default function OperationsLayout() {
             })}
 
             {/* Add Tab Button */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center justify-center h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors shrink-0 ml-1">
-                  <Plus className="h-3.5 w-3.5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[160px]">
-                {(Object.keys(TAB_TYPE_LABELS) as TabType[]).map(type => {
-                  const Icon = TAB_TYPE_ICONS[type];
-                  return (
-                    <DropdownMenuItem key={type} onClick={() => addNewTab(type)} className="gap-2 text-xs">
-                      <Icon className="h-3.5 w-3.5" />
-                      {TAB_TYPE_LABELS[type]}
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <AddTabMenu onAdd={addNewTab} />
           </div>
         </div>
 
