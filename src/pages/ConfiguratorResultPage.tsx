@@ -267,8 +267,6 @@ export default function ConfiguratorResultPage() {
             </div>
           )}
         </motion.div>
-          </div>
-        </motion.div>
 
         {/* Description + Components */}
         <motion.div
