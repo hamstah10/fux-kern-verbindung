@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
 
 const navItems = [
@@ -141,9 +141,9 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
           <div className="flex items-center justify-between h-14 px-6">
             <Link to="/operations" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-sm bg-destructive flex items-center justify-center">
-                <span className="text-destructive-foreground font-bold text-sm">OP</span>
+                <Gauge className="h-4 w-4 text-destructive-foreground" />
               </div>
-              <span className="font-bold text-foreground text-lg tracking-tight">Operations</span>
+              <span className="font-bold text-foreground text-lg tracking-tight">Tuning<span className="text-destructive">Cockpit</span></span>
             </Link>
 
             <nav className="flex items-center gap-1">
