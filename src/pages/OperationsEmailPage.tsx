@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, XCircle, Mail, Send, Inbox, Clock, User, Paperclip, Star, StarOff, ArrowRight, X } from 'lucide-react';
 import { DataCard } from '@/components/DataComponents';

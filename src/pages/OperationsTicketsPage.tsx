@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, XCircle, MessageSquare, Clock, User, AlertCircle, CheckCircle, X as XIcon, Filter } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
