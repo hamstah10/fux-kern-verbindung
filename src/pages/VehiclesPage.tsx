@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { SectionHeader, DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockVehicles } from '@/lib/mock-data';
 import { getConfiguredVehicles } from '@/lib/configurator-store';
 import type { Vehicle } from '@/types/models';
 import { motion } from 'framer-motion';
-import { Plus, Car } from 'lucide-react';
+import { Plus, Car, ExternalLink } from 'lucide-react';
 
 export default function VehiclesPage() {
   const configuredVehicles = getConfiguredVehicles();
@@ -48,25 +49,27 @@ function VehicleCard({ vehicle, index }: { vehicle: Vehicle; index: number }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
     >
-      <DataCard className="glass">
-        <div className="flex items-start justify-between mb-3">
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">{vehicle.brand} {vehicle.model}</h3>
-            <p className="text-xs text-muted-foreground">{vehicle.year} · {vehicle.engine_code}</p>
+      <Link to={`/admin/vehicles/${vehicle.id}`}>
+        <DataCard className="glass hover:border-muted-foreground/30 transition-colors cursor-pointer">
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">{vehicle.brand} {vehicle.model}</h3>
+              <p className="text-xs text-muted-foreground">{vehicle.year} · {vehicle.engine_code}</p>
+            </div>
+            <Car className="h-5 w-5 text-muted-foreground/30" />
           </div>
-          <Car className="h-5 w-5 text-muted-foreground/30" />
-        </div>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <DataField label="ECU" value={vehicle.ecu_type} />
-          <DataField label="Getriebe" value={vehicle.transmission.toUpperCase()} />
-          <DataField label="Serie PS" value={`${vehicle.stock_hp} PS`} />
-          <DataField label="Serie Nm" value={`${vehicle.stock_nm} Nm`} />
-          {vehicle.vin && <DataField label="VIN" value={vehicle.vin} className="col-span-2" />}
-        </div>
-        <div className="mt-3 pt-2 border-t border-border">
-          <span className="font-mono-data text-[10px] text-muted-foreground/40">{vehicle.id}</span>
-        </div>
-      </DataCard>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <DataField label="ECU" value={vehicle.ecu_type} />
+            <DataField label="Getriebe" value={vehicle.transmission.toUpperCase()} />
+            <DataField label="Serie PS" value={`${vehicle.stock_hp} PS`} />
+            <DataField label="Serie Nm" value={`${vehicle.stock_nm} Nm`} />
+            {vehicle.vin && <DataField label="VIN" value={vehicle.vin} className="col-span-2" />}
+          </div>
+          <div className="mt-3 pt-2 border-t border-border">
+            <span className="font-mono-data text-[10px] text-muted-foreground/40">{vehicle.id}</span>
+          </div>
+        </DataCard>
+      </Link>
     </motion.div>
   );
 }

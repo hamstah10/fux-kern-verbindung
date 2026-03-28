@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { SectionHeader, DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockVehicles, mockLeads, orderStatusLabels } from '@/lib/mock-data';
 import { motion } from 'framer-motion';
@@ -17,20 +18,22 @@ export default function OrdersPage() {
           const lead = mockLeads.find(l => l.id === order.lead_id);
           return (
             <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <DataCard>
-                <div className="flex items-center justify-between mb-2">
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground">{lead?.name || order.lead_id}</h3>
-                    {vehicle && <p className="text-xs text-muted-foreground">{vehicle.brand} {vehicle.model}</p>}
+              <Link to={`/admin/orders/${order.id}`}>
+                <DataCard className="hover:border-muted-foreground/30 transition-colors cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">{lead?.name || order.lead_id}</h3>
+                      {vehicle && <p className="text-xs text-muted-foreground">{vehicle.brand} {vehicle.model}</p>}
+                    </div>
+                    <StatusBadge status={orderStatusDisplay[order.status]} label={orderStatusLabels[order.status]} />
                   </div>
-                  <StatusBadge status={orderStatusDisplay[order.status]} label={orderStatusLabels[order.status]} />
-                </div>
-                <div className="flex items-center gap-4 text-xs mb-2">
-                  <span className="text-muted-foreground">Summe: <span className="font-mono-data text-foreground">€{order.total_eur.toLocaleString('de-DE')}</span></span>
-                  <span className="text-muted-foreground">Positionen: {order.items.join(', ')}</span>
-                </div>
-                <span className="font-mono-data text-[10px] text-muted-foreground/40">{order.id}</span>
-              </DataCard>
+                  <div className="flex items-center gap-4 text-xs mb-2">
+                    <span className="text-muted-foreground">Summe: <span className="font-mono-data text-foreground">€{order.total_eur.toLocaleString('de-DE')}</span></span>
+                    <span className="text-muted-foreground">Positionen: {order.items.join(', ')}</span>
+                  </div>
+                  <span className="font-mono-data text-[10px] text-muted-foreground/40">{order.id}</span>
+                </DataCard>
+              </Link>
             </motion.div>
           );
         })}
