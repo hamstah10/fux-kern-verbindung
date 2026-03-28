@@ -28,6 +28,8 @@ import NotFound from "./pages/NotFound";
 import OperationsDashboardPage from "./pages/OperationsDashboardPage";
 import OperationsOrdersPage from "./pages/OperationsOrdersPage";
 
+import OperationsKanbanPage from "./pages/OperationsKanbanPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -61,6 +63,7 @@ const App = () => (
           <Route element={<OperationsLayout />}>
             <Route path="/operations" element={<OperationsDashboardPage />} />
             <Route path="/operations/orders" element={<OperationsOrdersPage />} />
+            <Route path="/operations/kanban" element={<OperationsKanbanPage />} />
             <Route path="/operations/orders/:id" element={<OrderDetailPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
