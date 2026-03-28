@@ -137,8 +137,8 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
     <OperationsTabsContext.Provider value={{ tabs, activeTabId, addTab, removeTab, setActiveTab: setActiveTabId, cycleTabColor }}>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
         {/* Header */}
-        <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-md">
-          <div className="flex items-center justify-between h-14 px-6">
+        <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
+          <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-6">
             <Link to="/operations" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-sm bg-destructive flex items-center justify-center">
                 <Gauge className="h-4 w-4 text-destructive-foreground" />
@@ -173,45 +173,45 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
         </header>
 
         {/* Tabs Bar */}
-        <div className="border-b border-border bg-card/50 backdrop-blur-sm">
-          <div className="flex items-center h-9 px-6 gap-0.5 overflow-x-auto">
-            {tabs.map(tab => {
-              const Icon = TAB_TYPE_ICONS[tab.type];
-              const isActive = tab.id === activeTabId;
-              return (
-                <div
-                  key={tab.id}
-                  className={`group relative flex items-center gap-1.5 px-3 h-full text-xs cursor-pointer border-b-2 transition-all select-none shrink-0 ${
-                    isActive
-                      ? 'border-foreground text-foreground font-medium bg-secondary/40'
-                      : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/30'
-                  }`}
-                  style={tab.color ? { borderBottomColor: tab.color } : undefined}
-                  onClick={() => handleTabClick(tab)}
-                  onDoubleClick={() => cycleTabColor(tab.id)}
-                >
-                  {tab.color && (
-                    <span
-                      className="h-2 w-2 rounded-full shrink-0"
-                      style={{ backgroundColor: tab.color }}
-                    />
-                  )}
-                  <Icon className="h-3 w-3 shrink-0" />
-                  <span className="truncate max-w-[120px]">{tab.label}</span>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); removeTab(tab.id); }}
-                    className="ml-1 opacity-0 group-hover:opacity-100 hover:bg-secondary rounded-sm p-0.5 transition-opacity"
+        {tabs.length > 0 && (
+          <div className="bg-background/60 border-b border-border/50">
+            <div className="max-w-7xl mx-auto flex items-center h-9 px-6 gap-0.5 overflow-x-auto">
+              {tabs.map(tab => {
+                const Icon = TAB_TYPE_ICONS[tab.type];
+                const isActive = tab.id === activeTabId;
+                return (
+                  <div
+                    key={tab.id}
+                    className={`group relative flex items-center gap-1.5 px-3 h-full text-xs cursor-pointer border-b-2 transition-all select-none shrink-0 ${
+                      isActive
+                        ? 'border-destructive text-foreground font-medium bg-secondary/40'
+                        : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/30'
+                    }`}
+                    style={tab.color ? { borderBottomColor: tab.color } : undefined}
+                    onClick={() => handleTabClick(tab)}
+                    onDoubleClick={() => cycleTabColor(tab.id)}
                   >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              );
-            })}
-
-            {/* Add Tab Button */}
-            <AddTabMenu onAdd={addNewTab} />
+                    {tab.color && (
+                      <span
+                        className="h-2 w-2 rounded-full shrink-0"
+                        style={{ backgroundColor: tab.color }}
+                      />
+                    )}
+                    <Icon className="h-3 w-3 shrink-0" />
+                    <span className="truncate max-w-[120px]">{tab.label}</span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); removeTab(tab.id); }}
+                      className="ml-1 opacity-0 group-hover:opacity-100 hover:bg-secondary rounded-sm p-0.5 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                );
+              })}
+              <AddTabMenu onAdd={addNewTab} />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Content */}
         <main className="flex-1">
