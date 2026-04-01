@@ -1,4 +1,4 @@
-import { CheckCircle2, Copy, Terminal, Download, Server, Database, Shield, Globe, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Copy, Terminal, Download, Server, Database, Shield, Globe, ArrowRight, Key, Link2, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 
 interface StepProps {
@@ -198,7 +198,130 @@ npm run preview`}
         </div>
       </section>
 
-      {/* Troubleshooting */}
+      {/* Backend & Database */}
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+          <Database className="h-5 w-5 text-destructive" />
+          Backend &amp; Datenbankanbindung
+        </h2>
+
+        <p className="text-muted-foreground text-sm mb-6">
+          TuningCockpit nutzt <span className="text-foreground font-medium">Lovable Cloud</span> als Backend-Infrastruktur.
+          Dies umfasst eine PostgreSQL-Datenbank, Authentifizierung, Dateispeicher und Edge Functions – alles ohne externen Account.
+        </p>
+
+        <Step number={1} title="Lovable Cloud aktivieren">
+          <p>
+            Aktiviere Lovable Cloud in den Projekteinstellungen. Dadurch wird automatisch eine PostgreSQL-Datenbank,
+            ein Auth-System und Dateispeicher bereitgestellt.
+          </p>
+          <div className="mt-3 rounded-md border border-border bg-muted/30 p-4 flex gap-3">
+            <AlertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+            <p className="text-xs text-muted-foreground">
+              <span className="text-foreground font-medium">Hinweis:</span> Lovable Cloud muss aktiviert sein,
+              bevor Backend-Funktionen wie Login, Datenbank oder Edge Functions genutzt werden können.
+            </p>
+          </div>
+        </Step>
+
+        <Step number={2} title="Fahrzeugdatenbank-API anbinden">
+          <p>
+            Die Fahrzeugdatenbank ist an eine externe API angebunden. Folgende Umgebungsvariablen müssen als
+            Secrets im Projekt hinterlegt werden:
+          </p>
+          <CodeBlock
+            label="Secrets"
+            code={`FAHRZEUGDATENBANK_API_TOKEN=<dein-api-token>
+FAHRZEUGDATENBANK_TOKEN_ID=<deine-token-id>`}
+          />
+          <p className="mt-2">
+            Die API ist erreichbar unter{' '}
+            <code className="text-foreground font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
+              https://verwaltung.tuningfux.de/api/fahrzeugdatenbank
+            </code>
+          </p>
+          <p className="mt-2">
+            Jeder Request benötigt die Header{' '}
+            <code className="text-foreground font-mono text-xs bg-muted px-1.5 py-0.5 rounded">Authorization: Bearer &lt;API_TOKEN&gt;</code>{' '}
+            und{' '}
+            <code className="text-foreground font-mono text-xs bg-muted px-1.5 py-0.5 rounded">X-Token-Id: &lt;TOKEN_ID&gt;</code>.
+          </p>
+        </Step>
+
+        <Step number={3} title="Datenbank-Schema einrichten">
+          <p>
+            Nach der Aktivierung von Lovable Cloud können Tabellen und RLS-Policies direkt im Editor angelegt werden.
+            Beispiel für eine Fahrzeugtabelle:
+          </p>
+          <CodeBlock
+            label="SQL"
+            code={`CREATE TABLE vehicles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  brand TEXT NOT NULL,
+  model TEXT NOT NULL,
+  year INTEGER,
+  engine TEXT,
+  power_stock INTEGER,
+  power_tuned INTEGER,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE vehicles ENABLE ROW LEVEL SECURITY;`}
+          />
+        </Step>
+
+        <Step number={4} title="Edge Functions für API-Aufrufe">
+          <p>
+            Server-seitige Logik wie API-Aufrufe mit privaten Schlüsseln, E-Mail-Versand oder Zahlungsabwicklung
+            wird über Edge Functions realisiert.
+          </p>
+          <CodeBlock
+            label="Edge Function (Beispiel)"
+            code={`import { serve } from "https://deno.land/std/http/server.ts";
+
+serve(async (req) => {
+  const apiToken = Deno.env.get("FAHRZEUGDATENBANK_API_TOKEN");
+  const tokenId = Deno.env.get("FAHRZEUGDATENBANK_TOKEN_ID");
+
+  const response = await fetch(
+    "https://verwaltung.tuningfux.de/api/fahrzeugdatenbank/types",
+    {
+      headers: {
+        "Authorization": \`Bearer \${apiToken}\`,
+        "X-Token-Id": tokenId ?? "",
+      },
+    }
+  );
+
+  const data = await response.json();
+  return new Response(JSON.stringify(data), {
+    headers: { "Content-Type": "application/json" },
+  });
+});`}
+          />
+        </Step>
+
+        <Step number={5} title="Authentifizierung konfigurieren">
+          <p>
+            Lovable Cloud unterstützt E-Mail/Passwort-Login sowie Social Login (Google, Apple).
+            Die Konfiguration erfolgt über das Dashboard.
+          </p>
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <RequirementCard
+              icon={Key}
+              title="E-Mail / Passwort"
+              description="Standard-Login mit Registrierung und Passwort-Reset"
+            />
+            <RequirementCard
+              icon={Link2}
+              title="Social Login"
+              description="Sign in with Google und Sign in with Apple"
+            />
+          </div>
+        </Step>
+      </section>
+
+
       <section>
         <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
           <Shield className="h-5 w-5 text-destructive" />
