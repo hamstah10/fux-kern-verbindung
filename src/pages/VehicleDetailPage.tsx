@@ -14,8 +14,8 @@ const leadStatusToDisplay: Record<LeadStatus, 'success' | 'processing' | 'new' |
   new: 'new', qualified: 'processing', in_progress: 'processing', converted: 'success', lost: 'error',
 };
 
-const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
 const transmissionLabels: Record<string, string> = {

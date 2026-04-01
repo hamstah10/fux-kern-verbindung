@@ -5,8 +5,8 @@ import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockDealerRequests, orderStatusLabels, dealerRequestStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
 
-const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
 const drStatusDisplay: Record<string, 'new' | 'processing' | 'success' | 'error'> = {
@@ -20,7 +20,7 @@ export default function OperationsDashboardPage() {
 
   const stats = [
     { label: 'Offene Aufträge', value: activeOrders.length, icon: ClipboardList, color: 'text-[hsl(var(--processing))]' },
-    { label: 'In Qualitätsprüfung', value: mockOrders.filter(o => o.status === 'quality_check').length, icon: AlertTriangle, color: 'text-[hsl(var(--warning))]' },
+    { label: 'On Hold', value: mockOrders.filter(o => o.status === 'on_hold').length, icon: AlertTriangle, color: 'text-[hsl(var(--warning))]' },
     { label: 'Abgeschlossen', value: completedOrders.length, icon: CheckCircle, color: 'text-[hsl(var(--success))]' },
     { label: 'Werkstatt-Anfragen', value: activeRequests.length, icon: Clock, color: 'text-destructive' },
   ];

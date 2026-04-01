@@ -3,7 +3,7 @@
 export type LeadStatus = 'new' | 'qualified' | 'in_progress' | 'converted' | 'lost';
 export type SourceType = 'organic' | 'meta_ads' | 'tiktok_ads' | 'whatsapp' | 'referral';
 export type DealerRequestStatus = 'pending' | 'accepted' | 'in_progress' | 'completed' | 'rejected';
-export type OrderStatus = 'draft' | 'confirmed' | 'in_progress' | 'quality_check' | 'completed' | 'delivered';
+export type OrderStatus = 'received' | 'in_progress' | 'on_hold' | 'parked' | 'completed' | 'rejected';
 export type FileCategory = 'ecu_original' | 'ecu_modified' | 'dyno_report' | 'invoice' | 'protocol' | 'other';
 
 export interface SourceMetadata {

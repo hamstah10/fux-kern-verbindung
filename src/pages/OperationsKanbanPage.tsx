@@ -8,21 +8,22 @@ import type { Order, OrderStatus } from '@/types/models';
 import { toast } from 'sonner';
 
 const columns: { status: OrderStatus; color: string }[] = [
-  { status: 'draft', color: 'bg-muted-foreground' },
-  { status: 'confirmed', color: 'bg-[hsl(var(--processing))]' },
+  { status: 'received', color: 'bg-[hsl(var(--processing))]' },
   { status: 'in_progress', color: 'bg-[hsl(var(--processing))]' },
+  { status: 'on_hold', color: 'bg-[hsl(var(--warning))]' },
+  { status: 'parked', color: 'bg-muted-foreground' },
   { status: 'completed', color: 'bg-[hsl(var(--success))]' },
-  { status: 'delivered', color: 'bg-[hsl(var(--success))]' },
+  { status: 'rejected', color: 'bg-destructive' },
 ];
 
-const statusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const statusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
 export default function OperationsKanbanPage() {
   const [ordersByStatus, setOrdersByStatus] = useState<Record<OrderStatus, Order[]>>(() => {
     const grouped: Record<OrderStatus, Order[]> = {
-      draft: [], confirmed: [], in_progress: [], quality_check: [], completed: [], delivered: [],
+      received: [], in_progress: [], on_hold: [], parked: [], completed: [], rejected: [],
     };
     for (const order of mockOrders) {
       grouped[order.status].push({ ...order });
@@ -46,7 +47,7 @@ export default function OperationsKanbanPage() {
   const filteredByStatus = useMemo(() => {
     if (!search.trim()) return ordersByStatus;
     const q = search.toLowerCase();
-    const result: Record<OrderStatus, Order[]> = { draft: [], confirmed: [], in_progress: [], quality_check: [], completed: [], delivered: [] };
+    const result: Record<OrderStatus, Order[]> = { received: [], in_progress: [], on_hold: [], parked: [], completed: [], rejected: [] };
     for (const status of Object.keys(ordersByStatus) as OrderStatus[]) {
       result[status] = ordersByStatus[status].filter(order => {
         const lead = mockLeads.find(l => l.id === order.lead_id);
