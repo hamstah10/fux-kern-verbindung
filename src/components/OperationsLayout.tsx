@@ -4,14 +4,14 @@ import { NavLink } from '@/components/NavLink';
 import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
 
-const navItems = [
-  { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
-  { label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
-  { label: 'Fahrzeugdatenbank', path: '/operations/vehicles', icon: Car },
-  { label: 'Kunden', path: '/operations/customers', icon: UserCircle },
-  { label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
-  { label: 'E-Mail', path: '/operations/email', icon: Mail },
-  { label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
+const defaultNavItems = [
+  { id: 'overview', label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
+  { id: 'orders', label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
+  { id: 'vehicles', label: 'Fahrzeugdatenbank', path: '/operations/vehicles', icon: Car },
+  { id: 'customers', label: 'Kunden', path: '/operations/customers', icon: UserCircle },
+  { id: 'tickets', label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
+  { id: 'email', label: 'E-Mail', path: '/operations/email', icon: Mail },
+  { id: 'calendar', label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
 ];
 
 const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
