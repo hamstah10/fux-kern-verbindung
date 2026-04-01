@@ -1,4 +1,4 @@
-import { CheckCircle2, Copy, Terminal, Download, Server, Database, Shield, Globe, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Copy, Terminal, Download, Server, Database, Shield, Globe, ArrowRight, Key, Link2, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 
 interface StepProps {
