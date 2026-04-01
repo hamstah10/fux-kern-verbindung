@@ -115,7 +115,7 @@ export default function OperationsTicketsPage() {
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`px-2 py-1 text-[10px] rounded-sm transition-all ${
+                className={`px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                   statusFilter === s ? 'bg-destructive text-destructive-foreground font-medium' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                 }`}
               >
