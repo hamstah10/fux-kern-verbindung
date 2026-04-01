@@ -26,6 +26,7 @@ import ConfiguratorPage from "./pages/ConfiguratorPage";
 import ConfiguratorResultPage from "./pages/ConfiguratorResultPage";
 import NotFound from "./pages/NotFound";
 import OperationsDashboardPage from "./pages/OperationsDashboardPage";
+import OperationsVehiclesPage from "./pages/OperationsVehiclesPage";
 import OperationsOrdersPage from "./pages/OperationsOrdersPage";
 
 import OperationsCalendarPage from "./pages/OperationsCalendarPage";
@@ -70,7 +71,7 @@ const App = () => (
           <Route element={<OperationsLayout />}>
             <Route path="/operations" element={<OperationsDashboardPage />} />
             <Route path="/operations/orders" element={<OperationsOrdersPage />} />
-            
+            <Route path="/operations/vehicles" element={<OperationsVehiclesPage />} />
             <Route path="/operations/customers" element={<OperationsCustomersPage />} />
             <Route path="/operations/tickets" element={<OperationsTicketsPage />} />
             <Route path="/operations/email" element={<OperationsEmailPage />} />
