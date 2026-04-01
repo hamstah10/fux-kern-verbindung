@@ -12,6 +12,7 @@ const defaultNavItems = [
   { id: 'tickets', label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
   { id: 'email', label: 'E-Mail', path: '/operations/email', icon: Mail },
   { id: 'calendar', label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
+  { id: 'installation', label: 'Installation', path: '/operations/installation', icon: BookOpen },
 ];
 
 const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
