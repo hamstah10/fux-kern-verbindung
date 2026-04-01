@@ -23,11 +23,6 @@ const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
 
 let tabCounter = 0;
 
-export default function OperationsLayout() {
-  const [tabs, setTabs] = useState<OperationsTab[]>([]);
-  const [activeTabId, setActiveTabId] = useState<string | null>(null);
-  const navigate = useNavigate();
-
 function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -69,6 +64,14 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
     </div>
   );
 }
+
+export default function OperationsLayout() {
+  const [tabs, setTabs] = useState<OperationsTab[]>([]);
+  const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  const [navItems, setNavItems] = useState(defaultNavItems);
+  const dragNavItem = useRef<string | null>(null);
+  const [dragOverNavId, setDragOverNavId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
 
   const addTab = useCallback((tab: Omit<OperationsTab, 'id' | 'color'>) => {
