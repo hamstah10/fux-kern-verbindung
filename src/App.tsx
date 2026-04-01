@@ -70,7 +70,7 @@ const App = () => (
           <Route element={<OperationsLayout />}>
             <Route path="/operations" element={<OperationsDashboardPage />} />
             <Route path="/operations/orders" element={<OperationsOrdersPage />} />
-            <Route path="/operations/kanban" element={<OperationsKanbanPage />} />
+            
             <Route path="/operations/customers" element={<OperationsCustomersPage />} />
             <Route path="/operations/tickets" element={<OperationsTicketsPage />} />
             <Route path="/operations/email" element={<OperationsEmailPage />} />

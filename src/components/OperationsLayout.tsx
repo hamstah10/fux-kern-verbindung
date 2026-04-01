@@ -7,7 +7,6 @@ import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TA
 const navItems = [
   { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
   { label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
-  { label: 'Kanban', path: '/operations/kanban', icon: Columns3 },
   { label: 'Kunden', path: '/operations/customers', icon: UserCircle },
   { label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
   { label: 'E-Mail', path: '/operations/email', icon: Mail },
