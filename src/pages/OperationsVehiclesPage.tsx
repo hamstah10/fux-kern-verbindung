@@ -255,15 +255,14 @@ function SelectionGrid<T extends { id: number; name: string }>({ items, onSelect
     <div className="grid grid-cols-3 gap-2">
       {items.map((item, i) => (
         <motion.div key={item.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.02, 0.4) }}>
-          <DataCard
-            className="hover:border-muted-foreground/30 transition-colors cursor-pointer"
-            onClick={() => onSelect(item)}
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">{icon}</span>
-              <span className="text-sm font-medium text-foreground">{item.name}</span>
-            </div>
-          </DataCard>
+          <div onClick={() => onSelect(item)} className="cursor-pointer">
+            <DataCard className="hover:border-muted-foreground/30 transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">{icon}</span>
+                <span className="text-sm font-medium text-foreground">{item.name}</span>
+              </div>
+            </DataCard>
+          </div>
         </motion.div>
       ))}
     </div>
