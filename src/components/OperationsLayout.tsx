@@ -135,10 +135,6 @@ export default function OperationsLayout() {
     addTab({ type, label, path: pathMap[type] });
   };
 
-  // Draggable nav state
-  const [navItems, setNavItems] = useState(defaultNavItems);
-  const dragNavItem = useRef<string | null>(null);
-  const [dragOverNavId, setDragOverNavId] = useState<string | null>(null);
 
   const handleNavDragStart = useCallback((id: string) => {
     dragNavItem.current = id;
