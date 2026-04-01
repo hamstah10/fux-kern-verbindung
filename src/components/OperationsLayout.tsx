@@ -1,17 +1,17 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car, GripVertical } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
 
-const navItems = [
-  { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
-  { label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
-  { label: 'Fahrzeugdatenbank', path: '/operations/vehicles', icon: Car },
-  { label: 'Kunden', path: '/operations/customers', icon: UserCircle },
-  { label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
-  { label: 'E-Mail', path: '/operations/email', icon: Mail },
-  { label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
+const defaultNavItems = [
+  { id: 'overview', label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
+  { id: 'orders', label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
+  { id: 'vehicles', label: 'Fahrzeugdatenbank', path: '/operations/vehicles', icon: Car },
+  { id: 'customers', label: 'Kunden', path: '/operations/customers', icon: UserCircle },
+  { id: 'tickets', label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
+  { id: 'email', label: 'E-Mail', path: '/operations/email', icon: Mail },
+  { id: 'calendar', label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
 ];
 
 const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
@@ -132,6 +132,39 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
     addTab({ type, label, path: pathMap[type] });
   };
 
+  // Draggable nav state
+  const [navItems, setNavItems] = useState(defaultNavItems);
+  const dragNavItem = useRef<string | null>(null);
+  const [dragOverNavId, setDragOverNavId] = useState<string | null>(null);
+
+  const handleNavDragStart = useCallback((id: string) => {
+    dragNavItem.current = id;
+  }, []);
+
+  const handleNavDragOver = useCallback((e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverNavId(id);
+  }, []);
+
+  const handleNavDrop = useCallback((targetId: string) => {
+    setDragOverNavId(null);
+    const fromId = dragNavItem.current;
+    if (!fromId || fromId === targetId) { dragNavItem.current = null; return; }
+
+    setNavItems(prev => {
+      const fromIdx = prev.findIndex(i => i.id === fromId);
+      const toIdx = prev.findIndex(i => i.id === targetId);
+      if (fromIdx === -1 || toIdx === -1) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(fromIdx, 1);
+      next.splice(toIdx, 0, moved);
+      return next;
+    });
+
+    dragNavItem.current = null;
+  }, []);
+
   return (
     <OperationsTabsContext.Provider value={{ tabs, activeTabId, addTab, removeTab, setActiveTab: setActiveTabId, cycleTabColor }}>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -145,18 +178,27 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
               <span className="font-bold text-foreground text-lg tracking-tight">Tuning<span className="text-destructive">Cockpit</span></span>
             </Link>
 
-            <nav className="flex items-center gap-1">
+            <nav className="flex items-center gap-0.5">
               {navItems.map(item => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  end={item.end}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
-                  activeClassName="bg-secondary text-foreground font-medium"
+                <div
+                  key={item.id}
+                  draggable
+                  onDragStart={() => handleNavDragStart(item.id)}
+                  onDragOver={e => handleNavDragOver(e, item.id)}
+                  onDragLeave={() => setDragOverNavId(null)}
+                  onDrop={() => handleNavDrop(item.id)}
+                  className={`transition-all ${dragOverNavId === item.id ? 'border-l-2 border-destructive pl-0.5' : 'border-l-2 border-transparent'}`}
                 >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </NavLink>
+                  <NavLink
+                    to={item.path}
+                    end={item.end}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-grab active:cursor-grabbing"
+                    activeClassName="bg-secondary text-foreground font-medium"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </NavLink>
+                </div>
               ))}
             </nav>
 
