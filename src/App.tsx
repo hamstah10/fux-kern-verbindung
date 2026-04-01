@@ -26,6 +26,7 @@ import ConfiguratorPage from "./pages/ConfiguratorPage";
 import ConfiguratorResultPage from "./pages/ConfiguratorResultPage";
 import NotFound from "./pages/NotFound";
 import OperationsDashboardPage from "./pages/OperationsDashboardPage";
+import OperationsVehiclesPage from "./pages/OperationsVehiclesPage";
 import OperationsOrdersPage from "./pages/OperationsOrdersPage";
 
 import OperationsCalendarPage from "./pages/OperationsCalendarPage";

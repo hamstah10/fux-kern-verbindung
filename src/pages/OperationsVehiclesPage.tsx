@@ -2,16 +2,18 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Car, XCircle } from 'lucide-react';
 import { DataCard } from '@/components/DataComponents';
-import { vehicleDatabase } from '@/lib/vehicle-database';
+import { getAllVehicles } from '@/lib/vehicle-database';
+
+const allVehicles = getAllVehicles();
 
 export default function OperationsVehiclesPage() {
   const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return vehicleDatabase;
+    if (!search.trim()) return allVehicles;
     const q = search.toLowerCase();
-    return vehicleDatabase.filter(v => {
-      const haystack = `${v.brand} ${v.model} ${v.engine_code} ${v.year} ${v.fuel}`.toLowerCase();
+    return allVehicles.filter(v => {
+      const haystack = `${v.brand} ${v.model} ${v.engineCode} ${v.fuelType} ${v.ecuType ?? ''}`.toLowerCase();
       return haystack.includes(q);
     });
   }, [search]);
@@ -39,7 +41,7 @@ export default function OperationsVehiclesPage() {
 
         <div className="space-y-2">
           {filtered.map((v, i) => (
-            <motion.div key={v.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
+            <motion.div key={`${v.brand}-${v.model}-${v.engineCode}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.02, 0.5) }}>
               <DataCard>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-6">
@@ -47,19 +49,23 @@ export default function OperationsVehiclesPage() {
                       <Car className="h-4 w-4 text-muted-foreground" />
                       <div>
                         <p className="text-sm font-medium text-foreground">{v.brand} {v.model}</p>
-                        <p className="text-xs text-muted-foreground">{v.year} · {v.fuel}</p>
+                        <p className="text-xs text-muted-foreground">{v.fuelType === 'petrol' ? 'Benzin' : v.fuelType === 'diesel' ? 'Diesel' : v.fuelType === 'hybrid' ? 'Hybrid' : 'Elektro'}</p>
                       </div>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Motorcode</p>
-                      <p className="text-sm font-mono-data text-foreground">{v.engine_code}</p>
+                      <p className="text-sm font-mono-data text-foreground">{v.engineCode}</p>
                     </div>
+                    {v.ecuType && (
+                      <div>
+                        <p className="text-xs text-muted-foreground">ECU</p>
+                        <p className="text-sm font-mono-data text-foreground">{v.ecuType}</p>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-6 text-right">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Serie</p>
-                      <p className="text-sm font-mono-data text-foreground">{v.stock_hp} PS / {v.stock_nm} Nm</p>
-                    </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Serie</p>
+                    <p className="text-sm font-mono-data text-foreground">{v.stockHp} PS / {v.stockNm} Nm</p>
                   </div>
                 </div>
               </DataCard>
