@@ -20,7 +20,7 @@ export default function OperationsDashboardPage() {
 
   const stats = [
     { label: 'Offene Aufträge', value: activeOrders.length, icon: ClipboardList, color: 'text-[hsl(var(--processing))]' },
-    { label: 'In Qualitätsprüfung', value: mockOrders.filter(o => o.status === 'quality_check').length, icon: AlertTriangle, color: 'text-[hsl(var(--warning))]' },
+    { label: 'On Hold', value: mockOrders.filter(o => o.status === 'on_hold').length, icon: AlertTriangle, color: 'text-[hsl(var(--warning))]' },
     { label: 'Abgeschlossen', value: completedOrders.length, icon: CheckCircle, color: 'text-[hsl(var(--success))]' },
     { label: 'Werkstatt-Anfragen', value: activeRequests.length, icon: Clock, color: 'text-destructive' },
   ];

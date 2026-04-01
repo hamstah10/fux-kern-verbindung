@@ -4,8 +4,8 @@ import { mockOrders, mockVehicles, mockLeads, orderStatusLabels } from '@/lib/mo
 import { motion } from 'framer-motion';
 import type { OrderStatus } from '@/types/models';
 
-const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
 export default function OrdersPage() {
