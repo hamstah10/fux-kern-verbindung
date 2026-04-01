@@ -24,7 +24,7 @@ export default function OperationsDashboardPage() {
     <div className="p-6 max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <h1 className="text-2xl font-bold text-foreground mb-1">Operations Center</h1>
-        <p className="text-sm text-muted-foreground mb-6">Alle Aufträge und Werkstattanfragen auf einen Blick</p>
+        <p className="text-sm text-muted-foreground mb-6">Alle Aufträge auf einen Blick</p>
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-3 mb-8">
