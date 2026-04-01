@@ -37,6 +37,7 @@ import OperationsTicketsPage from "./pages/OperationsTicketsPage";
 import OperationsTicketDetailPage from "./pages/OperationsTicketDetailPage";
 import OperationsEmailPage from "./pages/OperationsEmailPage";
 import OperationsEmailDetailPage from "./pages/OperationsEmailDetailPage";
+import InstallationGuidePage from "./pages/InstallationGuidePage";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ const App = () => (
             <Route path="/operations/email" element={<OperationsEmailPage />} />
             <Route path="/operations/calendar" element={<OperationsCalendarPage />} />
             <Route path="/operations/team" element={<OperationsTeamPage />} />
+            <Route path="/operations/installation" element={<InstallationGuidePage />} />
             <Route path="/operations/orders/:id" element={<OrderDetailPage />} />
             <Route path="/operations/customers/:id" element={<OperationsCustomerDetailPage />} />
             <Route path="/operations/tickets/:id" element={<OperationsTicketDetailPage />} />
