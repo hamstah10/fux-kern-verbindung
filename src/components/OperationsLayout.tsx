@@ -68,7 +68,21 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
 export default function OperationsLayout() {
   const [tabs, setTabs] = useState<OperationsTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
-  const [navItems, setNavItems] = useState(defaultNavItems);
+  const [navItems, setNavItems] = useState(() => {
+    const saved = localStorage.getItem('ops-nav-order');
+    if (saved) {
+      try {
+        const ids = JSON.parse(saved) as string[];
+        const sorted = ids
+          .map(id => defaultNavItems.find(i => i.id === id))
+          .filter(Boolean) as typeof defaultNavItems;
+        // Add any new items not in saved order
+        const missing = defaultNavItems.filter(i => !ids.includes(i.id));
+        return [...sorted, ...missing];
+      } catch { /* ignore */ }
+    }
+    return defaultNavItems;
+  });
   const dragNavItem = useRef<string | null>(null);
   const [dragOverNavId, setDragOverNavId] = useState<string | null>(null);
   const navigate = useNavigate();
