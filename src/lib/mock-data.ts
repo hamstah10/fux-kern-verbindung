@@ -242,12 +242,12 @@ export const dealerRequestStatusLabels: Record<string, string> = {
 };
 
 export const orderStatusLabels: Record<string, string> = {
-  draft: 'Entwurf',
-  confirmed: 'Bestätigt',
+  received: 'Eingegangen',
   in_progress: 'In Bearbeitung',
-  quality_check: 'Qualitätsprüfung',
+  on_hold: 'On Hold',
+  parked: 'Geparkt',
   completed: 'Abgeschlossen',
-  delivered: 'Ausgeliefert',
+  rejected: 'Abgelehnt',
 };
 
 export const fileCategoryLabels: Record<string, string> = {
