@@ -1,13 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, Columns3, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
 
 const navItems = [
   { label: 'Übersicht', path: '/operations', icon: LayoutDashboard, end: true },
   { label: 'Aufträge', path: '/operations/orders', icon: ClipboardList },
-  { label: 'Kanban', path: '/operations/kanban', icon: Columns3 },
   { label: 'Kunden', path: '/operations/customers', icon: UserCircle },
   { label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
   { label: 'E-Mail', path: '/operations/email', icon: Mail },
