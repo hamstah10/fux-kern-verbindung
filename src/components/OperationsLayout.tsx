@@ -174,8 +174,8 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
 
         {/* Tabs Bar */}
         {tabs.length > 0 && (
-           <div className="bg-background/60 border-b border-border/50">
-            <div className="max-w-7xl mx-auto flex items-center h-10 px-6 gap-0.5 overflow-x-auto">
+           <div className="relative bg-background/60 border-b border-border/50">
+            <div className="relative max-w-7xl mx-auto flex items-center h-10 px-6 gap-0.5 overflow-x-auto">
               {tabs.map(tab => {
                 const Icon = TAB_TYPE_ICONS[tab.type];
                 const isActive = tab.id === activeTabId;
