@@ -97,7 +97,7 @@ export default function OperationsEmailPage() {
             </button>
             <button
               onClick={() => { setFolder('sent'); setSelectedEmail(null); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-sm transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                 folder === 'sent' ? 'bg-destructive text-destructive-foreground font-medium' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
               }`}
             >

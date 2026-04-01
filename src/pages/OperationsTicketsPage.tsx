@@ -250,7 +250,7 @@ function TicketDetailPanel({ ticket, onClose, onStatusChange }: {
                 <button
                   key={s}
                   onClick={() => onStatusChange(ticket.id, s)}
-                  className={`px-2 py-1 text-[10px] rounded-sm transition-all ${
+                  className={`px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                     ticket.status === s ? 'bg-destructive text-destructive-foreground font-medium' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                   }`}
                 >
