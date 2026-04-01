@@ -132,6 +132,39 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
     addTab({ type, label, path: pathMap[type] });
   };
 
+  // Draggable nav state
+  const [navItems, setNavItems] = useState(defaultNavItems);
+  const dragNavItem = useRef<string | null>(null);
+  const [dragOverNavId, setDragOverNavId] = useState<string | null>(null);
+
+  const handleNavDragStart = useCallback((id: string) => {
+    dragNavItem.current = id;
+  }, []);
+
+  const handleNavDragOver = useCallback((e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverNavId(id);
+  }, []);
+
+  const handleNavDrop = useCallback((targetId: string) => {
+    setDragOverNavId(null);
+    const fromId = dragNavItem.current;
+    if (!fromId || fromId === targetId) { dragNavItem.current = null; return; }
+
+    setNavItems(prev => {
+      const fromIdx = prev.findIndex(i => i.id === fromId);
+      const toIdx = prev.findIndex(i => i.id === targetId);
+      if (fromIdx === -1 || toIdx === -1) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(fromIdx, 1);
+      next.splice(toIdx, 0, moved);
+      return next;
+    });
+
+    dragNavItem.current = null;
+  }, []);
+
   return (
     <OperationsTabsContext.Provider value={{ tabs, activeTabId, addTab, removeTab, setActiveTab: setActiveTabId, cycleTabColor }}>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -145,18 +178,27 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
               <span className="font-bold text-foreground text-lg tracking-tight">Tuning<span className="text-destructive">Cockpit</span></span>
             </Link>
 
-            <nav className="flex items-center gap-1">
+            <nav className="flex items-center gap-0.5">
               {navItems.map(item => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  end={item.end}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
-                  activeClassName="bg-secondary text-foreground font-medium"
+                <div
+                  key={item.id}
+                  draggable
+                  onDragStart={() => handleNavDragStart(item.id)}
+                  onDragOver={e => handleNavDragOver(e, item.id)}
+                  onDragLeave={() => setDragOverNavId(null)}
+                  onDrop={() => handleNavDrop(item.id)}
+                  className={`transition-all ${dragOverNavId === item.id ? 'border-l-2 border-destructive pl-0.5' : 'border-l-2 border-transparent'}`}
                 >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </NavLink>
+                  <NavLink
+                    to={item.path}
+                    end={item.end}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-grab active:cursor-grabbing"
+                    activeClassName="bg-secondary text-foreground font-medium"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </NavLink>
+                </div>
               ))}
             </nav>
 
