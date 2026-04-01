@@ -4,8 +4,8 @@
 const API_BASE = 'https://verwaltung.tuningfux.de/api/fahrzeugdatenbank';
 
 // TODO: Replace with real tokens
-const API_TOKEN = '';
-const TOKEN_ID = '';
+const API_TOKEN = '4696bcdc17a6a99565c608fdb40be65f0feeef2082ede98e214ae363ba6dbdfb';
+const TOKEN_ID = '0b2e35b123dd33cbb154fc986049f544';
 
 const headers: Record<string, string> = {
   'Content-Type': 'application/json',
