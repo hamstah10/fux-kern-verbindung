@@ -184,7 +184,7 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
                     key={tab.id}
                     className={`group relative flex items-center gap-1.5 px-3 text-xs cursor-pointer border-b-2 transition-all select-none shrink-0 py-2 ${
                       isActive
-                        ? 'border-destructive text-foreground font-medium bg-secondary/40'
+                        ? 'border-destructive text-foreground font-medium bg-secondary'
                         : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/30'
                     }`}
                     style={tab.color ? { borderBottomColor: tab.color } : undefined}
