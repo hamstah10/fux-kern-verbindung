@@ -8,15 +8,16 @@ import type { Order, OrderStatus } from '@/types/models';
 import { toast } from 'sonner';
 
 const columns: { status: OrderStatus; color: string }[] = [
-  { status: 'draft', color: 'bg-muted-foreground' },
-  { status: 'confirmed', color: 'bg-[hsl(var(--processing))]' },
+  { status: 'received', color: 'bg-[hsl(var(--processing))]' },
   { status: 'in_progress', color: 'bg-[hsl(var(--processing))]' },
+  { status: 'on_hold', color: 'bg-[hsl(var(--warning))]' },
+  { status: 'parked', color: 'bg-muted-foreground' },
   { status: 'completed', color: 'bg-[hsl(var(--success))]' },
-  { status: 'delivered', color: 'bg-[hsl(var(--success))]' },
+  { status: 'rejected', color: 'bg-destructive' },
 ];
 
-const statusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const statusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
 export default function OperationsKanbanPage() {
