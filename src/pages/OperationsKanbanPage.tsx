@@ -47,7 +47,7 @@ export default function OperationsKanbanPage() {
   const filteredByStatus = useMemo(() => {
     if (!search.trim()) return ordersByStatus;
     const q = search.toLowerCase();
-    const result: Record<OrderStatus, Order[]> = { draft: [], confirmed: [], in_progress: [], quality_check: [], completed: [], delivered: [] };
+    const result: Record<OrderStatus, Order[]> = { received: [], in_progress: [], on_hold: [], parked: [], completed: [], rejected: [] };
     for (const status of Object.keys(ordersByStatus) as OrderStatus[]) {
       result[status] = ordersByStatus[status].filter(order => {
         const lead = mockLeads.find(l => l.id === order.lead_id);

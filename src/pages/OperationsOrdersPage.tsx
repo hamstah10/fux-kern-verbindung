@@ -7,11 +7,11 @@ import { mockOrders, mockLeads, mockVehicles, orderStatusLabels } from '@/lib/mo
 import type { OrderStatus } from '@/types/models';
 import { PinToTabButton } from '@/components/PinToTabButton';
 
-const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
-const allStatuses: Array<OrderStatus | 'all'> = ['all', 'draft', 'confirmed', 'in_progress', 'quality_check', 'completed', 'delivered'];
+const allStatuses: Array<OrderStatus | 'all'> = ['all', 'received', 'in_progress', 'on_hold', 'parked', 'completed', 'rejected'];
 
 export default function OperationsOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');

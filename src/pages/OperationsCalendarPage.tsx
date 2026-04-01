@@ -5,8 +5,8 @@ import { DataCard, StatusBadge } from '@/components/DataComponents';
 import { mockOrders, mockLeads, mockVehicles, orderStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
 
-const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
 const WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];

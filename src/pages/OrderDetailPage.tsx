@@ -19,7 +19,7 @@ export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const order = mockOrders.find(o => o.id === id);
 
-  const [currentStatus, setCurrentStatus] = useState<OrderStatus>(order?.status ?? 'draft');
+  const [currentStatus, setCurrentStatus] = useState<OrderStatus>(order?.status ?? 'received');
   const [notes, setNotes] = useState('');
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
