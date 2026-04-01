@@ -41,56 +41,31 @@ export default function OperationsDashboardPage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          {/* Active Orders */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-foreground">Aktive Aufträge ({activeOrders.length})</h2>
-              <Link to="/operations/orders" className="text-xs text-destructive hover:underline flex items-center gap-1">
-                Alle anzeigen <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-            <div className="space-y-2">
-              {activeOrders.slice(0, 6).map(order => (
-                <Link to={`/operations/orders/${order.id}`} key={order.id}>
-                  <DataCard className="hover:border-muted-foreground/30 transition-colors cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{order.id}</p>
-                        <p className="text-xs text-muted-foreground">{order.items.join(', ')} · €{order.total_eur.toLocaleString('de-DE')}</p>
-                      </div>
-                      <StatusBadge status={orderStatusDisplay[order.status]} label={orderStatusLabels[order.status]} />
-                    </div>
-                  </DataCard>
-                </Link>
-              ))}
-              {activeOrders.length === 0 && (
-                <p className="text-sm text-muted-foreground italic">Keine aktiven Aufträge</p>
-              )}
-            </div>
+        {/* Active Orders */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-foreground">Aktive Aufträge ({activeOrders.length})</h2>
+            <Link to="/operations/orders" className="text-xs text-destructive hover:underline flex items-center gap-1">
+              Alle anzeigen <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
-
-          {/* Active Dealer Requests */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-foreground">Werkstattanfragen ({activeRequests.length})</h2>
-            </div>
-            <div className="space-y-2">
-              {activeRequests.slice(0, 6).map(req => (
-                <DataCard key={req.id} className="hover:border-muted-foreground/30 transition-colors">
+          <div className="space-y-2">
+            {activeOrders.slice(0, 8).map(order => (
+              <Link to={`/operations/orders/${order.id}`} key={order.id}>
+                <DataCard className="hover:border-muted-foreground/30 transition-colors cursor-pointer">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-foreground">{req.id}</p>
-                      <p className="text-xs text-muted-foreground">Equipment: {req.protocol_equipment.join(', ')} · ~{req.estimated_duration_hours}h</p>
+                      <p className="text-sm font-medium text-foreground">{order.id}</p>
+                      <p className="text-xs text-muted-foreground">{order.items.join(', ')} · €{order.total_eur.toLocaleString('de-DE')}</p>
                     </div>
-                    <StatusBadge status={drStatusDisplay[req.status]} label={dealerRequestStatusLabels[req.status]} />
+                    <StatusBadge status={orderStatusDisplay[order.status]} label={orderStatusLabels[order.status]} />
                   </div>
                 </DataCard>
-              ))}
-              {activeRequests.length === 0 && (
-                <p className="text-sm text-muted-foreground italic">Keine offenen Anfragen</p>
-              )}
-            </div>
+              </Link>
+            ))}
+            {activeOrders.length === 0 && (
+              <p className="text-sm text-muted-foreground italic">Keine aktiven Aufträge</p>
+            )}
           </div>
         </div>
       </motion.div>
