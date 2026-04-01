@@ -83,4 +83,12 @@ const App = () => (
             <Route path="/operations/customers/:id" element={<OperationsCustomerDetailPage />} />
             <Route path="/operations/tickets/:id" element={<OperationsTicketDetailPage />} />
             <Route path="/operations/email/:id" element={<OperationsEmailDetailPage />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
 export default App;
