@@ -9,11 +9,11 @@ import { toast } from 'sonner';
 import ActivityTimeline, { type ActivityEntry } from '@/components/ActivityTimeline';
 import { PinToTabButton } from '@/components/PinToTabButton';
 
-const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning'> = {
-  draft: 'new', confirmed: 'processing', in_progress: 'processing', quality_check: 'warning', completed: 'success', delivered: 'success',
+const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
+  received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
-const statusSteps: OrderStatus[] = ['draft', 'confirmed', 'in_progress', 'quality_check', 'completed', 'delivered'];
+const statusSteps: OrderStatus[] = ['received', 'in_progress', 'on_hold', 'parked', 'completed', 'rejected'];
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
