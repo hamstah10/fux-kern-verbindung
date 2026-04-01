@@ -1,7 +1,7 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, type LucideIcon } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car, GripVertical } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
 
 const defaultNavItems = [
