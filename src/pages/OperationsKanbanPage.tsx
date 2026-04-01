@@ -169,7 +169,7 @@ export default function OperationsKanbanPage() {
             return (
               <div
                 key={col.status}
-                className={`flex-1 min-w-[180px] max-w-[280px] flex flex-col rounded-sm transition-colors ${
+                className={`flex-1 min-w-[180px] max-w-[280px] flex flex-col rounded-sm transition-colors self-start ${
                   isOver ? 'bg-destructive/5 ring-1 ring-destructive/30' : 'bg-secondary/30'
                 }`}
                 onDragOver={e => handleDragOver(e, col.status)}
