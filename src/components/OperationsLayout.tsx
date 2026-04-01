@@ -182,7 +182,7 @@ function AddTabMenu({ onAdd }: { onAdd: (type: TabType) => void }) {
                 return (
                   <div
                     key={tab.id}
-                    className={`group relative flex items-center gap-1.5 px-3 h-full text-xs cursor-pointer border-b-2 transition-all select-none shrink-0 ${
+                    className={`group relative flex items-center gap-1.5 px-3 h-full text-xs cursor-pointer border-b-2 transition-all select-none shrink-0 py-[5px] ${
                       isActive
                         ? 'border-destructive text-foreground font-medium bg-secondary/40'
                         : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/30'
