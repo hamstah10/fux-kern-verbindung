@@ -336,7 +336,7 @@ function OrderDetailPanel({ order, onClose, onStatusChange }: {
                 <button
                   key={col.status}
                   onClick={() => onStatusChange(order, col.status)}
-                  className={`px-2 py-1 text-[10px] rounded-sm transition-all ${
+                  className={`px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                     order.status === col.status
                       ? 'bg-destructive text-destructive-foreground font-medium'
                       : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
