@@ -46,7 +46,7 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
           onClick={handleCopy}
           className="absolute top-2 right-2 p-1.5 rounded-sm bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
         >
-          {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
         </button>
       </div>
     </div>
