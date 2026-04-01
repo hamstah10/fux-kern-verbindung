@@ -23,7 +23,7 @@ const statusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'war
 export default function OperationsKanbanPage() {
   const [ordersByStatus, setOrdersByStatus] = useState<Record<OrderStatus, Order[]>>(() => {
     const grouped: Record<OrderStatus, Order[]> = {
-      draft: [], confirmed: [], in_progress: [], quality_check: [], completed: [], delivered: [],
+      received: [], in_progress: [], on_hold: [], parked: [], completed: [], rejected: [],
     };
     for (const order of mockOrders) {
       grouped[order.status].push({ ...order });
