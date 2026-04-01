@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { NavLink } from '@/components/NavLink';
-import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car, GripVertical } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, CalendarDays, Users, Mail, TicketCheck, UserCircle, Settings, X, Plus, Gauge, Car, GripVertical, BookOpen } from 'lucide-react';
 import { OperationsTabsContext, type OperationsTab, type TabType, TAB_COLORS, TAB_TYPE_LABELS } from '@/lib/operations-tabs-store';
 
 const defaultNavItems = [
@@ -12,6 +12,7 @@ const defaultNavItems = [
   { id: 'tickets', label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
   { id: 'email', label: 'E-Mail', path: '/operations/email', icon: Mail },
   { id: 'calendar', label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
+  { id: 'installation', label: 'Installation', path: '/operations/installation', icon: BookOpen },
 ];
 
 const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
