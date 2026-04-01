@@ -147,7 +147,7 @@ export default function OperationsKanbanPage() {
             <button
               key={col.status}
               onClick={() => toggleCol(col.status)}
-              className={`px-2 py-1 text-[10px] rounded-sm transition-all ${
+              className={`px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                 hiddenCols.has(col.status)
                   ? 'bg-secondary/50 text-muted-foreground line-through'
                   : 'bg-secondary text-secondary-foreground'
@@ -169,7 +169,7 @@ export default function OperationsKanbanPage() {
             return (
               <div
                 key={col.status}
-                className={`flex-1 min-w-[180px] max-w-[280px] flex flex-col rounded-sm transition-colors ${
+                className={`flex-1 min-w-[180px] max-w-[280px] flex flex-col rounded-sm transition-colors self-start ${
                   isOver ? 'bg-destructive/5 ring-1 ring-destructive/30' : 'bg-secondary/30'
                 }`}
                 onDragOver={e => handleDragOver(e, col.status)}
@@ -336,7 +336,7 @@ function OrderDetailPanel({ order, onClose, onStatusChange }: {
                 <button
                   key={col.status}
                   onClick={() => onStatusChange(order, col.status)}
-                  className={`px-2 py-1 text-[10px] rounded-sm transition-all ${
+                  className={`px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                     order.status === col.status
                       ? 'bg-destructive text-destructive-foreground font-medium'
                       : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
