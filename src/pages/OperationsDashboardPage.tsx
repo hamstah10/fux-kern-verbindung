@@ -1,28 +1,23 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, Clock, CheckCircle, AlertTriangle, ArrowRight } from 'lucide-react';
+import { ClipboardList, CheckCircle, AlertTriangle, ArrowRight, ParkingCircle } from 'lucide-react';
 import { DataCard, StatusBadge } from '@/components/DataComponents';
-import { mockOrders, mockDealerRequests, orderStatusLabels, dealerRequestStatusLabels } from '@/lib/mock-data';
+import { mockOrders, orderStatusLabels } from '@/lib/mock-data';
 import type { OrderStatus } from '@/types/models';
 
 const orderStatusDisplay: Record<OrderStatus, 'new' | 'processing' | 'success' | 'warning' | 'error'> = {
   received: 'new', in_progress: 'processing', on_hold: 'warning', parked: 'warning', completed: 'success', rejected: 'error',
 };
 
-const drStatusDisplay: Record<string, 'new' | 'processing' | 'success' | 'error'> = {
-  pending: 'new', accepted: 'processing', in_progress: 'processing', completed: 'success', rejected: 'error',
-};
-
 export default function OperationsDashboardPage() {
-  const activeOrders = mockOrders.filter(o => !['completed', 'delivered'].includes(o.status));
-  const completedOrders = mockOrders.filter(o => ['completed', 'delivered'].includes(o.status));
-  const activeRequests = mockDealerRequests.filter(r => !['completed', 'rejected'].includes(r.status));
+  const activeOrders = mockOrders.filter(o => !['completed', 'rejected'].includes(o.status));
+  const completedOrders = mockOrders.filter(o => o.status === 'completed');
 
   const stats = [
     { label: 'Offene Aufträge', value: activeOrders.length, icon: ClipboardList, color: 'text-[hsl(var(--processing))]' },
     { label: 'On Hold', value: mockOrders.filter(o => o.status === 'on_hold').length, icon: AlertTriangle, color: 'text-[hsl(var(--warning))]' },
+    { label: 'Geparkt', value: mockOrders.filter(o => o.status === 'parked').length, icon: ParkingCircle, color: 'text-muted-foreground' },
     { label: 'Abgeschlossen', value: completedOrders.length, icon: CheckCircle, color: 'text-[hsl(var(--success))]' },
-    { label: 'Werkstatt-Anfragen', value: activeRequests.length, icon: Clock, color: 'text-destructive' },
   ];
 
   return (
