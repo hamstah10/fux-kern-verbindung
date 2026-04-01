@@ -86,7 +86,7 @@ export default function OperationsEmailPage() {
           <div className="flex gap-1">
             <button
               onClick={() => { setFolder('inbox'); setSelectedEmail(null); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-sm transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-sm transition-all ${
                 folder === 'inbox' ? 'bg-destructive text-destructive-foreground font-medium' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
               }`}
             >
