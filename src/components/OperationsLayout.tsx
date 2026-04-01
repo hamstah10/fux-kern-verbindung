@@ -172,6 +172,7 @@ export default function OperationsLayout() {
       const next = [...prev];
       const [moved] = next.splice(fromIdx, 1);
       next.splice(toIdx, 0, moved);
+      localStorage.setItem('ops-nav-order', JSON.stringify(next.map(i => i.id)));
       return next;
     });
 
