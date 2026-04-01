@@ -53,7 +53,9 @@ async function apiFetch<T>(path: string): Promise<T> {
   if (!res.ok) {
     throw new Error(`API error ${res.status}: ${res.statusText}`);
   }
-  return res.json();
+  const json = await res.json();
+  // API wraps responses in { data: ... }
+  return json.data !== undefined ? json.data : json;
 }
 
 export function isConfigured(): boolean {
