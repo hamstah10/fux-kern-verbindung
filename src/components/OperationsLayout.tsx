@@ -11,7 +11,6 @@ const navItems = [
   { label: 'Tickets', path: '/operations/tickets', icon: TicketCheck },
   { label: 'E-Mail', path: '/operations/email', icon: Mail },
   { label: 'Kalender', path: '/operations/calendar', icon: CalendarDays },
-  { label: 'Team', path: '/operations/team', icon: Users },
 ];
 
 const TAB_TYPE_ICONS: Record<TabType, typeof ClipboardList> = {
