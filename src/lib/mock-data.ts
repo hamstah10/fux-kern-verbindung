@@ -191,6 +191,42 @@ export const mockOrders: Order[] = [
     status: 'completed', recommendation_id: 'r-001',
     total_eur: 990, items: ['ECU-Remap Stage 1'],
   },
+  {
+    id: 'o-003', created_at: ago(120), updated_at: ago(60),
+    lead_id: 'l-001', vehicle_id: 'v-001',
+    status: 'received', recommendation_id: 'r-001',
+    total_eur: 790, items: ['ECU-Remap Stage 1', 'Diagnose'],
+  },
+  {
+    id: 'o-004', created_at: ago(2880), updated_at: ago(1440),
+    lead_id: 'l-002', vehicle_id: 'v-002', dealer_id: 'd-003',
+    status: 'on_hold', recommendation_id: 'r-002',
+    total_eur: 2450, items: ['ECU-Remap Stage 2', 'Ladeluftkühler', 'Ölkühler'],
+  },
+  {
+    id: 'o-005', created_at: ago(10080), updated_at: ago(8640),
+    lead_id: 'l-005', vehicle_id: 'v-001',
+    status: 'parked', recommendation_id: 'r-001',
+    total_eur: 590, items: ['Kennfeld-Anpassung'],
+  },
+  {
+    id: 'o-006', created_at: ago(7200), updated_at: ago(7000),
+    lead_id: 'l-005', vehicle_id: 'v-002',
+    status: 'rejected', recommendation_id: 'r-002',
+    total_eur: 1290, items: ['ECU-Remap Stage 2', 'Downpipe'],
+  },
+  {
+    id: 'o-007', created_at: ago(360), updated_at: ago(180),
+    lead_id: 'l-001', vehicle_id: 'v-004', dealer_id: 'd-001',
+    status: 'received', recommendation_id: 'r-001',
+    total_eur: 1150, items: ['ECU-Remap Stage 1', 'DSG-Anpassung'],
+  },
+  {
+    id: 'o-008', created_at: ago(5760), updated_at: ago(4320),
+    lead_id: 'l-002', vehicle_id: 'v-003', dealer_id: 'd-002',
+    status: 'completed', recommendation_id: 'r-002',
+    total_eur: 3200, items: ['ECU-Remap Stage 2', 'Downpipe', 'LLK', 'Dyno-Session'],
+  },
 ];
 
 // Telemetry
